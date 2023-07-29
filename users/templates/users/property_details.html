@@ -1,0 +1,35 @@
+<!-- users/property_details.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Property Details</title>
+  </head>
+  <body>
+    <h1>Property Details</h1>
+    <div>
+      <h2>Apartment Details:</h2>
+      <p>Name: {{ apartment.name }}</p>
+      <p>Location: {{ apartment.location }}</p>
+      <p>Price: {{ apartment.price }}</p>
+      <p>Description: {{ apartment.description }}</p>
+    </div>
+    <div>
+      <!-- Pass property_id through the form submission -->
+      <form action="{% url 'create_room' %}" method="post">
+        {% csrf_token %} {{ form.as_p }}
+        <input type="hidden" name="property_id" value="{{ apartment.id }}" />
+        <input type="submit" value="Create Room" />
+      </form>
+    </div>
+    <div>
+      <h2>Rooms:</h2>
+      {% for room in rooms %}
+      <p>Room Size: {{ room.size }}</p>
+      <p>Description: {{ room.description }}</p>
+      {% endfor %}
+    </div>
+  </body>
+</html>
