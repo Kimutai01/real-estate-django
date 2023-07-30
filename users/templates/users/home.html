@@ -1,0 +1,60 @@
+{% extends 'main.html' %} {% block content %}
+
+<!-- Search Bar -->
+
+<div class="home-background flex items-end justify-center">
+  <!-- Search Bar -->
+  <div class="search-bar-container w-[50%] rounded-md mb-20">
+    <form method="GET" action="{% url 'search_results' %}">
+      <div class="search-bar">
+        <input
+          type="text"
+          name="search_query"
+          placeholder="Search by name or location"
+        />
+        <select name="property_type">
+          <option value="buy">Buy</option>
+          <option value="rent">Rent</option>
+        </select>
+        <button type="submit">Search</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div
+  class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 mt-10 md:mx-auto md:w-[95%] gap-10"
+>
+  {% for apartment in apartments %}
+  <div class="bg-white shadow-lg rounded-md overflow-hidden">
+    <!-- Apartment Image -->
+    <img
+      src="{{ apartment.image.url }}"
+      alt="{{ apartment.name }}"
+      class="w-full h-48 object-cover object-center"
+    />
+
+    <div class="p-4">
+      <!-- Apartment Name -->
+      <h5 class="text-xl font-semibold">{{ apartment.name }}</h5>
+
+      <!-- Apartment Description -->
+      <p class="text-gray-600 mt-2">{{ apartment.description }}</p>
+
+      <div class="flex justify-between items-center mt-4">
+        <!-- Apartment Price -->
+        <span class="text-lg font-semibold text-indigo-600"
+          >${{ apartment.price }}</span
+        >
+        <a
+          href="{% url 'property_details' apartment.id %}"
+          class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700"
+          >Details</a
+        >
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

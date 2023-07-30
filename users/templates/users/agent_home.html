@@ -8,9 +8,15 @@
   </head>
   <body>
     <h1>Agent</h1>
+    <button>
+      <a href="{% url 'logout' %}">Logout</a>
+    </button>
 
     <ul>
       <h2>Your Apartments:</h2>
+      <button type="button">
+        <a href="{% url 'create_property' %}">Create Apartment</a>
+      </button>
       <ul>
         {% for property in apartment %}
         <li>

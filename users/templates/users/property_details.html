@@ -1,35 +1,44 @@
-<!-- users/property_details.html -->
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Property Details</title>
-  </head>
-  <body>
-    <h1>Property Details</h1>
-    <div>
-      <h2>Apartment Details:</h2>
-      <p>Name: {{ apartment.name }}</p>
-      <p>Location: {{ apartment.location }}</p>
-      <p>Price: {{ apartment.price }}</p>
-      <p>Description: {{ apartment.description }}</p>
+{% extends 'main.html' %} {% block content %}
+<div class="container mx-auto p-8">
+  <h1 class="text-3xl font-bold mb-8">Property Details</h1>
+  <div class="bg-white rounded-md shadow p-6 mb-8">
+    <h2 class="text-2xl font-bold mb-4">Apartment Details:</h2>
+    <p><span class="font-semibold">Name:</span> {{ apartment.name }}</p>
+    <p><span class="font-semibold">Location:</span> {{ apartment.location }}</p>
+    <p><span class="font-semibold">Price:</span> ${{ apartment.price }}</p>
+    <p>
+      <span class="font-semibold">Description:</span> {{ apartment.description
+      }}
+    </p>
+  </div>
+
+  <p class="mb-4">
+    <span class="font-semibold">Agent:</span> {{ apartment.agent}}
+  </p>
+  {% if user.is_authenticated and user == apartment.agent.user %}
+  <div class="bg-white rounded-md shadow p-6 mb-8">
+    <h2 class="text-2xl font-bold mb-4">Create Room</h2>
+    <form action="{% url 'create_room' %}" method="post">
+      {% csrf_token %} {{ form.as_p }}
+      <input type="hidden" name="property_id" value="{{ apartment.id }}" />
+      <input
+        type="submit"
+        value="Create Room"
+        class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+      />
+    </form>
+  </div>
+  {% endif %}
+  <div class="bg-white rounded-md shadow p-6">
+    <h2 class="text-2xl font-bold mb-4">Rooms:</h2>
+    {% for room in rooms %}
+    <div class="border border-gray-300 rounded-md p-4 mb-4">
+      <p class="font-semibold">Room Size:</p>
+      <p>{{ room.size }}</p>
+      <p class="font-semibold mt-2">Description:</p>
+      <p>{{ room.description }}</p>
     </div>
-    <div>
-      <!-- Pass property_id through the form submission -->
-      <form action="{% url 'create_room' %}" method="post">
-        {% csrf_token %} {{ form.as_p }}
-        <input type="hidden" name="property_id" value="{{ apartment.id }}" />
-        <input type="submit" value="Create Room" />
-      </form>
-    </div>
-    <div>
-      <h2>Rooms:</h2>
-      {% for room in rooms %}
-      <p>Room Size: {{ room.size }}</p>
-      <p>Description: {{ room.description }}</p>
-      {% endfor %}
-    </div>
-  </body>
-</html>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

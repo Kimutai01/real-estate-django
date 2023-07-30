@@ -8,10 +8,19 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.urls import reverse
 from .decorators import tenant_required,agent_required
 from django.http import Http404
+from django.shortcuts import render
+from .models import Property
+
 
 
 
 # Create your views here.
+def landing_page(request):
+    apartments = Property.objects.all()
+    context = {
+        'apartments':apartments
+    }
+    return render(request,'users/home.html',context)
 def agent_signup_view(request):
     if request.method == 'POST':
         form = AgentSignUpForm(request.POST)
@@ -71,15 +80,21 @@ def agent_home(request):
     
     return render(request,'users/agent_home.html',context)
 
-@login_required
 def property_details(request, id): 
     apartment = Property.objects.get(id=id)
     rooms = Room.objects.filter(property=apartment)
     context = {
         'apartment': apartment,
-        'rooms': rooms
+        'rooms': rooms,
+        'property_id': id,
     }
     return render(request, 'users/property_details.html', context)
+
+@login_required
+def logout_view(request):
+    logout(request)
+    return redirect('landing_page')
+
 
 # @login_required
 # @agent_required
@@ -116,22 +131,32 @@ def create_property(request):
 @agent_required
 def create_room(request):
     user = request.user
-
     if request.method == 'POST':
         form = RoomForm(request.POST)
         if form.is_valid():
             room_instance = form.save(commit=False)
-            
-            # Set the agent for the property instance before saving
-            try:
-                agent = get_object_or_404(Agent, user=user)
-                room_instance.agent = agent
-                room_instance.save()
-                return redirect('agent_home')
-            except IntegrityError:
-             
-                return HttpResponseServerError("Agent not found for the user.")
+            property_id = request.POST.get('property_id')
+            property_instance = get_object_or_404(Property, id=property_id)
+            room_instance.property = property_instance
+            room_instance.save()
+            return redirect('property_details', id=property_id)  # Redirect back to property details page
     else:
         form = RoomForm()
 
     return render(request, 'users/create_room.html', {'form': form})
+
+def search_results(request):
+    search_query = request.GET.get('search_query')
+    property_type = request.GET.get('property_type')
+
+    # Filter properties based on search_query and property_type
+    properties = Property.objects.filter(
+        name__icontains=search_query,
+        property_type=property_type
+    )
+
+    context = {
+        'properties': properties,
+    }
+    return render(request, 'users/search_results.html', context)
+

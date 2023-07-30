@@ -56,8 +56,7 @@ class PropertyForm(forms.ModelForm):
 class RoomForm(forms.ModelForm):
     class Meta:
         model = Room
-        exclude = ('property',) 
-        fields = ('name',)  
+        fields = ('name','property')
         
 class BookingForm(forms.ModelForm):
     class Meta:
