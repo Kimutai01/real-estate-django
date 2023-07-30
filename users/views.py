@@ -83,11 +83,22 @@ def agent_home(request):
 def property_details(request, id): 
     apartment = Property.objects.get(id=id)
     rooms = Room.objects.filter(property=apartment)
+
     context = {
         'apartment': apartment,
         'rooms': rooms,
         'property_id': id,
     }
+    if request.method == 'POST':
+        form = RoomForm(request.POST)
+        if form.is_valid():
+            room = form.save(commit=False)
+            room.property = apartment
+            room.save()
+            return redirect('property_details', id=id)
+    else:
+        form = RoomForm()
+    context['form'] = form
     return render(request, 'users/property_details.html', context)
 
 @login_required
@@ -109,11 +120,12 @@ def create_property(request):
     user = request.user
 
     if request.method == 'POST':
-        form = PropertyForm(request.POST)
+        form = PropertyForm(request.POST, request.FILES)
+        
         if form.is_valid():
             property_instance = form.save(commit=False)
             
-            # Set the agent for the property instance before saving
+        
             try:
                 agent = get_object_or_404(Agent, user=user)
                 property_instance.agent = agent
@@ -127,23 +139,7 @@ def create_property(request):
 
     return render(request, 'users/create_property.html', {'form': form})
 
-@login_required
-@agent_required
-def create_room(request):
-    user = request.user
-    if request.method == 'POST':
-        form = RoomForm(request.POST)
-        if form.is_valid():
-            room_instance = form.save(commit=False)
-            property_id = request.POST.get('property_id')
-            property_instance = get_object_or_404(Property, id=property_id)
-            room_instance.property = property_instance
-            room_instance.save()
-            return redirect('property_details', id=property_id)  # Redirect back to property details page
-    else:
-        form = RoomForm()
 
-    return render(request, 'users/create_room.html', {'form': form})
 
 def search_results(request):
     search_query = request.GET.get('search_query')
@@ -159,4 +155,12 @@ def search_results(request):
         'properties': properties,
     }
     return render(request, 'users/search_results.html', context)
+
+@login_required
+def room_details(request, id):
+    room = Room.objects.get(id=id)
+    context = {
+        'room': room,
+    }
+    return render(request, 'users/room_details.html', context)
 

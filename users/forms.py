@@ -51,12 +51,14 @@ class LoginForm(AuthenticationForm):
 class PropertyForm(forms.ModelForm):
     class Meta:
         model = Property
-        fields = ('name','location','price','description')
+        fields = ('name','location','image','price','description','agent')
+        
         
 class RoomForm(forms.ModelForm):
     class Meta:
         model = Room
-        fields = ('name','property')
+        exclude = ('property',)
+        fields=('name',)
         
 class BookingForm(forms.ModelForm):
     class Meta:

@@ -15,8 +15,9 @@ urlpatterns = [
     path('agent_home/property/<int:id>/', views.property_details, name='property_details'),
     path('logout/',auth_views.LogoutView.as_view(),name="logout"),
     path('create_property/',views.create_property,name="create_property"),
-    path('create_room/', views.create_room, name='create_room'),
+    # path('create_room/', views.create_room, name='create_room'),
     path('search_results/', views.search_results, name='search_results'),
+    path('room/<int:id>/', views.room_details, name='room_details'),
     
     
 

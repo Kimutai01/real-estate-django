@@ -1,17 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Agent</title>
-  </head>
-  <body>
-    <h1>Agent Signup</h1>
-    <form action="{% url 'agent_signup' %}" method="POST">
-      {% csrf_token %} {{ form.as_p }}
-      <input type="submit" value="Signup" />
-    </form>
-    <p>Already registered! - <a href="{% url 'login' %}">Login Now</a><br /></p>
-  </body>
-</html>
+{% extends 'main.html' %} {% block content %}
+
+<div class="container mx-auto">
+  <h1 class="text-3xl font-bold my-8">Agent Signup</h1>
+  <form
+    action="{% url 'agent_signup' %}"
+    method="POST"
+    class="max-w-md mx-auto"
+  >
+    {% csrf_token %} {{ form.as_p }}
+    <input
+      type="submit"
+      value="Signup"
+      class="bg-blue-500 text-white px-4 py-2 mt-4 w-full rounded-md"
+    />
+  </form>
+  <p class="text-center mt-4">
+    Already registered! -
+    <a href="{% url 'login' %}" class="text-blue-500">Login Now</a><br />
+  </p>
+</div>
+{% endblock %}
