@@ -1,3 +1,20 @@
 {% extends 'main.html' %} {% block content %}
 <h1>{{room.name}}</h1>
-{% endblock %}
+
+{% if user.is_authenticated %} {% with bookings=user.tenant.booking_set.all %}
+{% for booking in bookings %} {% if booking.room == room %}
+<!-- User has booked this room, show cancel booking button -->
+<a href="{% url 'cancel_booking' room.id %}">
+  <button class="btn btn-danger">Cancel Booking</button>
+</a>
+{% endif %} {% endfor %} {% if not bookings.exists %}
+<!-- User has not booked this room, show book button -->
+<a href="{% url 'booking' room.id %}">
+  <button class="btn btn-primary">Book</button>
+</a>
+{% endif %} {% endwith %} {% else %}
+<!-- User is not logged in, show book button (assuming anonymous users can book rooms) -->
+<a href="{% url 'booking' room.id %}">
+  <button class="btn btn-primary">Book</button>
+</a>
+{% endif %} {% endblock %}

@@ -2,6 +2,7 @@ from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 from django.db import transaction
 from .models import User,Agent,Tenant,Property,Room,Booking
 from django import forms
+from tempus_dominus.widgets import DatePicker
 from django.contrib.auth import get_user_model
 
 class AgentSignUpForm(UserCreationForm):
@@ -61,6 +62,15 @@ class RoomForm(forms.ModelForm):
         fields=('name',)
         
 class BookingForm(forms.ModelForm):
+    widget = {
+        'check_in': forms.DateTimeInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
+        'check_out': forms.DateTimeInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
+    }
     class Meta:
         model = Booking
-        fields = ('tenant','room','check_in','check_out')
+        exclude = ('tenant', 'room')
+        fields = ('check_in', 'check_out')
+        widgets = {
+            'check_in': forms.DateTimeInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
+            'check_out': forms.DateTimeInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
+        }

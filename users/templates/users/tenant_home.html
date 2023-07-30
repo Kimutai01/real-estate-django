@@ -1,10 +1,24 @@
 {% extends 'main.html' %} {% block content %}
 <h1>Tenant home</h1>
 <ul>
-  {% for propert in properties %}
+  {% for booking in bookings %}
   <li>
-    <a href="/tenant/property/{{ propert.id }}">{{ propert.name }}</a>
+    <a href=""> {{ booking.check_in }} - {{ booking.check_out }} </a>
   </li>
-  {% endfor %}
+  <li>
+    <a href=""> {{ booking.room.name }} </a>
+  </li>
+  <li>
+    <a href=""> {{ booking.room.property.name }} </a>
+  </li>
+  <li>
+    <a href=""> {{ booking.room.property.location }} </a>
+  </li>
+  <li>
+    <a href=""> {{ booking.property.address }} </a>
+  </li>
+    {% endfor %}
+  </li>
 </ul>
+
 {% endblock %}
