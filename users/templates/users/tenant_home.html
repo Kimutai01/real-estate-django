@@ -1,24 +1,53 @@
 {% extends 'main.html' %} {% block content %}
-<h1>Tenant home</h1>
-<ul>
-  {% for booking in bookings %}
-  <li>
-    <a href=""> {{ booking.check_in }} - {{ booking.check_out }} </a>
-  </li>
-  <li>
-    <a href=""> {{ booking.room.name }} </a>
-  </li>
-  <li>
-    <a href=""> {{ booking.room.property.name }} </a>
-  </li>
-  <li>
-    <a href=""> {{ booking.room.property.location }} </a>
-  </li>
-  <li>
-    <a href=""> {{ booking.property.address }} </a>
-  </li>
+<h1 class="text-2xl font-bold mb-4">Tenant home</h1>
+<div class="container px-5 py-24 mx-auto">
+  <div class="flex flex-wrap -m-4">
+    {% for booking in bookings %}
+    <div class="xl:w-1/3 md:w-1/2 p-4">
+      <div class="border border-gray-200 p-6 rounded-lg">
+        <div
+          class="w-10 h-10 inline-flex items-center justify-center rounded-full bg-indigo-100 text-indigo-500 mb-4"
+        >
+          <svg
+            fill="none"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            class="w-6 h-6"
+            viewBox="0 0 24 24"
+          >
+            <!-- Calendar icon representation -->
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+        </div>
+        <h2 class="text-lg font-medium title-font mb-2 text-blue-600">
+          {{ booking.check_in }} - {{ booking.check_out }}
+        </h2>
+        <p class="leading-relaxed text-base">
+          <span class="font-bold"> Room name: </span>
+
+          {{ booking.room.name }}
+        </p>
+        <p class="leading-relaxed text-base">
+          <span class="font-bold"> Apartment name: </span>
+          {{ booking.room.property.name }}
+        </p>
+        <p class="leading-relaxed text-base">
+          <span class="font-bold"> Location: </span>
+          {{ booking.room.property.location }}
+        </p>
+        <p class="leading-relaxed text-base">
+          <span class="font-bold"> Agent: </span>
+          {{ booking.room.property.agent }}
+        </p>
+      </div>
+    </div>
     {% endfor %}
-  </li>
-</ul>
+  </div>
+</div>
 
 {% endblock %}

@@ -75,11 +75,15 @@ def tenant_home(request):
 @login_required
 @agent_required
 def agent_home(request):
-    apartment = Property.objects.filter(agent=request.user.agent)
-    print(apartment)
-    context={'apartment':apartment}
-    
-    return render(request,'users/agent_home.html',context)
+    apartments = Property.objects.filter(agent=request.user.agent)
+    bookings = Booking.objects.filter(room__property__agent=request.user.agent)
+    print(bookings)
+    print(apartments)
+    context = {
+        'apartments': apartments,
+        'bookings': bookings,
+    }
+    return render(request, 'users/agent_home.html', context)
 
 def property_details(request, id): 
     apartment = Property.objects.get(id=id)

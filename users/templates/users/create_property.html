@@ -1,7 +1,23 @@
 {% extends 'main.html' %} {% block content %}
-<h1>Create Property</h1>
-<form action="{% url 'create_property' %}" method="POST">
-  {% csrf_token %} {{ form.as_p }}
-  <input type="submit" value="Create" />
+<h1 class="text-2xl font-bold mb-4">Create Property</h1>
+<form
+  action="{% url 'create_property' %}"
+  method="POST"
+  class="max-w-md mx-auto"
+>
+  {% csrf_token %}
+  <div class="mb-4">{{ form.name.label_tag }} {{ form.name }}</div>
+  <div class="mb-4">{{ form.location.label_tag }} {{ form.location }}</div>
+  <div class="mb-4">{{ form.image.label_tag }} {{ form.image }}</div>
+  <div class="mb-4">{{ form.price.label_tag }} {{ form.price }}</div>
+  <div class="mb-4">
+    {{ form.description.label_tag }} {{ form.description }}
+  </div>
+  <div class="mb-4">{{ form.agent.label_tag }} {{ form.agent }}</div>
+  <input
+    type="submit"
+    value="Create"
+    class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+  />
 </form>
 {% endblock %}

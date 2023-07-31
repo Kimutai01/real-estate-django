@@ -29,10 +29,10 @@
     >
       <a class="mr-5 hover:text-gray-900">
         {% if user.is_authenticated and user.is_agent %}
-        <a class='mr-5' href="{% url 'agent_home' %}">Home</a>
+        <a class="mr-5" href="{% url 'agent_home' %}">Home</a>
         {% elif user.is_authenticated and user.is_tenant %}
-        <a class='mr-5' href="{% url 'tenant_home' %}">Home</a>
-    
+        <a class="mr-5" href="{% url 'tenant_home' %}">Home</a>
+
         {% endif %}
       </a>
       <a class="mr-5" href="{% url 'landing_page' %}">Listings</a>
@@ -41,27 +41,30 @@
         href="{% if user.is_authenticated and user.is_agent %}{% url 'agent_home' %}{% else %}{% url 'agent_signup' %}{% endif %}"
         >Agent</a
       >
-      <a class="mr-5 hover:text-gray-900" href="{% if user.is_authenticated and user.is_tenant %}{% url 'tenant_home' %}{% else %}{% url 'tenant_signup' %}{% endif %}">Tenant</a>
-        Tenant</a
+      <a
+        class="mr-5 hover:text-gray-900"
+        href="{% if user.is_authenticated and user.is_tenant %}{% url 'tenant_home' %}{% else %}{% url 'tenant_signup' %}{% endif %}"
+        >Tenant</a
       >
     </nav>
     {% if user.is_authenticated %}
     <button
       class="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0"
-      url="{% url 'logout' %}"
     >
-    Logout 
-      <svg
-        fill="none"
-        stroke="currentColor"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="2"
-        class="w-4 h-4 ml-1"
-        viewBox="0 0 24 24"
-      >
-        <path d="M5 12h14M12 5l7 7-7 7"></path>
-      </svg>
+      <a href="{% url 'logout' %}">
+        Logout
+        <svg
+          fill="none"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          class="w-4 h-4 ml-1"
+          viewBox="0 0 24 24"
+        >
+          <path d="M5 12h14M12 5l7 7-7 7"></path>
+        </svg>
+      </a>
     </button>
     {% else %}
     <button

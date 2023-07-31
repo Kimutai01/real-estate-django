@@ -1,10 +1,40 @@
+<!-- login.html -->
 {% extends 'main.html' %} {% block content %}
-<h1>Login</h1>
-<form action="{% url 'login' %}" method="post">
-  {% csrf_token %} {{ form.as_p }}
-  <input type="submit" value="Login" />
-</form>
-<p>Not yet registered!</p>
-<a href="{% url 'agent_signup' %}">Signup as Agent</a>
-<a href="{% url 'tenant_signup' %}">Signup as Tenant</a>
+<div class="container mx-auto mt-8">
+  <h1 class="text-3xl font-bold mb-8 text-center">Login</h1>
+  <form action="{% url 'login' %}" method="post" class="max-w-md mx-auto">
+    {% csrf_token %}
+    <div class="mb-4">
+      <label
+        for="{{ form.username.id_for_label }}"
+        class="block text-sm font-medium text-gray-700"
+        >Username:</label
+      >
+      {{ form.username }}
+    </div>
+    <div class="mb-4">
+      <label
+        for="{{ form.password.id_for_label }}"
+        class="block text-sm font-medium text-gray-700"
+        >Password:</label
+      >
+      {{ form.password }}
+    </div>
+    <input
+      type="submit"
+      value="Login"
+      class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 mt-4 w-full rounded-md"
+    />
+  </form>
+  <p class="text-center mt-4">
+    Not yet registered! -
+    <a href="{% url 'agent_signup' %}" class="text-blue-500 hover:underline"
+      >Signup as Agent</a
+    >
+    or
+    <a href="{% url 'tenant_signup' %}" class="text-blue-500 hover:underline"
+      >Signup as Tenant</a
+    ><br />
+  </p>
+</div>
 {% endblock %}
