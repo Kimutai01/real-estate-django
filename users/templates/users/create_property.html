@@ -4,6 +4,7 @@
   action="{% url 'create_property' %}"
   method="POST"
   class="max-w-md mx-auto"
+  enctype="multipart/form-data"
 >
   {% csrf_token %}
   <div class="mb-4">{{ form.name.label_tag }} {{ form.name }}</div>

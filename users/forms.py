@@ -1,9 +1,11 @@
 from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 from django.db import transaction
-from .models import User,Agent,Tenant,Property,Room,Booking
+from .models import User,Agent,Tenant,Property,Room,Booking,AvailableTime, Occupation, Bill
 from django import forms
 from tempus_dominus.widgets import DatePicker
 from django.contrib.auth import get_user_model
+from django.utils import timezone
+from datetime import timedelta
 
 class AgentSignUpForm(UserCreationForm):
     first_name = forms.CharField(
@@ -148,16 +150,94 @@ class RoomForm(forms.ModelForm):
         exclude = ('property',)
         fields=('name',)
         
+# class BookingForm(forms.ModelForm):
+#     widget = {
+#         'check_in': forms.DateTimeInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
+#         'check_out': forms.DateTimeInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
+#     }
+#     class Meta:
+#         model = Booking
+#         exclude = ('tenant', 'room')
+#         fields = ('check_in', 'check_out')
+#         widgets = {
+#             'check_in': forms.DateTimeInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
+#             'check_out': forms.DateTimeInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
+#         }
+
+class AvailableTimeForm(forms.ModelForm):
+    date = forms.DateField(
+        widget=forms.DateInput(attrs={
+            'class': 'w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-500',
+            'placeholder': 'Select a date',
+            'type': 'date',  # This attribute will enable date picker in modern browsers
+        }),
+        label='Date'
+    )
+
+    time = forms.TimeField(
+        widget=forms.TimeInput(attrs={
+            'class': 'w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-500',
+            'placeholder': 'Select a time',
+            'type': 'time',  # This attribute will enable time picker in modern browsers
+        }),
+        label='Time'
+    )
+
+    class Meta:
+        model = AvailableTime
+        exclude = ['agent', 'room']
+        
 class BookingForm(forms.ModelForm):
-    widget = {
-        'check_in': forms.DateTimeInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
-        'check_out': forms.DateTimeInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
-    }
     class Meta:
         model = Booking
-        exclude = ('tenant', 'room')
-        fields = ('check_in', 'check_out')
+        fields = ['available_time', ]
+
         widgets = {
-            'check_in': forms.DateTimeInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
-            'check_out': forms.DateTimeInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
+            'available_time': forms.Select(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-500'}),
+            'tenant': forms.Select(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-500'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        room_id = kwargs.pop('room_id', None)
+        super().__init__(*args, **kwargs)
+        # Filter available times for the specific room
+        if room_id is not None:
+            self.fields['available_time'].queryset = AvailableTime.objects.filter(room__id=room_id)
+            
+
+class OccupationForm(forms.ModelForm):
+    start_date = forms.DateField(
+        widget=forms.DateInput(attrs={
+            'class': 'w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-500',
+            'placeholder': 'Select a date',
+            'type': 'date',  # This attribute will enable date picker in modern browsers
+        }),
+        label='Date'
+    )
+
+    class Meta:
+        model = Occupation
+        exclude = ['room']
+        fields = ['tenant', 'start_date']
+        
+        widgets = {
+            'tenant': forms.Select(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-500'}),
+            'start_date': forms.Select(attrs={'class': 'w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-500'}),
+        }
+
+
+class BillForm(forms.ModelForm):
+    due_date = forms.DateField(
+        widget=forms.DateInput(attrs={
+            'class': 'w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-500',
+            'placeholder': 'Select a date',
+            'type': 'date',  # This attribute will enable date picker in modern browsers
+        }),
+        
+    )
+    
+    
+    class Meta:
+        model = Bill
+        exclude = ['room', 'tenant']
+        fields = [ 'name', 'amount', 'due_date']

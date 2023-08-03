@@ -25,24 +25,24 @@
           </svg>
         </div>
         <h2 class="text-lg font-medium title-font mb-2 text-blue-600">
-          {{ booking.check_in }} - {{ booking.check_out }}
+          {{ booking.available_time.date }} at {{ booking.available_time.time }}
         </h2>
         <p class="leading-relaxed text-base">
           <span class="font-bold"> Room name: </span>
 
-          {{ booking.room.name }}
+          {{ booking.available_time.room.name}}
         </p>
         <p class="leading-relaxed text-base">
           <span class="font-bold"> Apartment name: </span>
-          {{ booking.room.property.name }}
+          {{ booking.available_time.room.property.name }}
         </p>
         <p class="leading-relaxed text-base">
           <span class="font-bold"> Location: </span>
-          {{ booking.room.property.location }}
+          {{ booking.available_time.room.property.location }}
         </p>
         <p class="leading-relaxed text-base">
           <span class="font-bold"> Agent: </span>
-          {{ booking.room.property.agent }}
+          {{ booking.available_time.room.property.agent }}
         </p>
       </div>
     </div>

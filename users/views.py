@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect, get_object_or_404
 from .models import User,Agent,Tenant,Property,Room,Booking
-from .forms import AgentSignUpForm,TenantSignUpForm,LoginForm,PropertyForm,RoomForm, BookingForm
+from .forms import AgentSignUpForm,TenantSignUpForm,LoginForm,PropertyForm,RoomForm,AvailableTimeForm,BookingForm,OccupationForm,BillForm
 from django.contrib.auth import login,authenticate,logout
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
@@ -9,7 +9,13 @@ from django.urls import reverse
 from .decorators import tenant_required,agent_required
 from django.http import Http404
 from django.shortcuts import render
-from .models import Property, Booking
+from .models import Property, Booking, AvailableTime, Room, Occupation, Bill
+# import messages
+from django.contrib import messages
+#timezone
+from django.utils import timezone
+#timedelta
+from datetime import timedelta
 
 
 # Create your views here.
@@ -65,7 +71,10 @@ def login_view(request):
 def tenant_home(request):
     properties = Property.objects.all()
     bookings = Booking.objects.filter(tenant=request.user.tenant)
+    occupation = Occupation.objects.filter(tenant=request.user.tenant)
     print(bookings)
+    print(occupation)
+    
     context = {
         'properties':properties,
         'bookings':bookings
@@ -76,18 +85,19 @@ def tenant_home(request):
 @agent_required
 def agent_home(request):
     apartments = Property.objects.filter(agent=request.user.agent)
-    bookings = Booking.objects.filter(room__property__agent=request.user.agent)
-    print(bookings)
+    
+    # bookings = Booking.objects.filter(room__property__agent=request.user.agent)
+    # print(bookings)
     print(apartments)
     context = {
         'apartments': apartments,
-        'bookings': bookings,
+        
     }
     return render(request, 'users/agent_home.html', context)
 
 def property_details(request, id): 
     apartment = Property.objects.get(id=id)
-    rooms = Room.objects.filter(property=apartment)
+    rooms = Room.objects.filter(property=apartment, is_occupied=False)
 
     context = {
         'apartment': apartment,
@@ -161,53 +171,144 @@ def search_results(request):
     }
     return render(request, 'users/search_results.html', context)
 
+
 @login_required
 def room_details(request, id):
     room = Room.objects.get(id=id)
+    available_times = AvailableTime.objects.filter(room=room)
+    booking = None
+    
+    
+    
+
+    occupation = Occupation.objects.filter(room=room)
+    bills = Bill.objects.filter(room=room, tenant=occupation.first().tenant) if occupation else []
+    is_authenticated_tenant = request.user.is_authenticated and hasattr(request.user, 'tenant')
+
+    if is_authenticated_tenant:
+        booking = Booking.objects.filter(tenant=request.user.tenant, available_time__room=room).first()
+
+    has_booking = Booking.objects.filter(tenant=request.user.tenant, available_time__room=room).exists() if is_authenticated_tenant else False
+
+    # Initialize the BookingForm and pass the room_id to the form
+    form = BookingForm(request.POST or None, room_id=id)
+    
+    bill_form = BillForm(request.POST or None)
+
+    # Add the OccupationForm to the view
+    occupation_form = OccupationForm()
+
+    if request.method == 'POST' and request.user.is_agent:
+        occupation_form = OccupationForm(request.POST)
+        if occupation_form.is_valid():
+            occupation = occupation_form.save(commit=False)
+            occupation.room = room
+            occupation.save()
+            room.is_occupied = True
+            room.save()
+            return redirect('room_details', id=id)
+
+        # If the request is from an agent to add a bill
+        bill_form = BillForm(request.POST)
+        if bill_form.is_valid():
+            bill = bill_form.save(commit=False)
+            bill.room = room
+            bill.tenant = occupation.first().tenant
+            bill.save()
+            return redirect('room_details', id=id)
+
+    if request.method == 'POST' and is_authenticated_tenant:
+        # If the request is from a tenant to book a room
+        if form.is_valid():
+            booking = form.save(commit=False)
+            booking.tenant = request.user.tenant
+            booking.save()
+            return redirect('room_details', id=id)
+
     context = {
         'room': room,
+        'available_times': available_times,
+        'form': form if is_authenticated_tenant else None,
+        'is_authenticated_tenant': is_authenticated_tenant,
+        'has_booking': has_booking,
+        'booking': booking,
+        'occupation_form': occupation_form,
+        'occupation': occupation,
+        'bill_form': bill_form,
+        'bills': bills,
     }
     return render(request, 'users/room_details.html', context)
 
 
-@login_required
-def book_room(request, id):
+
+
+
+def add_available_time(request, id):
     user = request.user
     room = Room.objects.get(id=id)
+    if request.method == 'POST':
+        form = AvailableTimeForm(request.POST)
+        if form.is_valid():
+            available_time = form.save(commit=False)
+            available_time.agent = user.agent
+            available_time.room = room
+            form.save()
+            return redirect('agent_home')
+    else:
+        form = AvailableTimeForm()
+        
+    return render(request, 'users/add_available_time.html', {'form': form})
 
+# def show_available_time(request, id):
+#     room = Room.objects.get(id=id)
+#     available_times = AvailableTime.objects.filter(room=room)
+#     context = {
+#         'available_times': available_times,
+#     }
+#     return render(request, 'users/show_available_time.html', context)
+
+def add_booking(request, room_id):
     if request.method == 'POST':
         form = BookingForm(request.POST)
         if form.is_valid():
-            check_in = form.cleaned_data['check_in']
-            check_out = form.cleaned_data['check_out']
+            booking = form.save(commit=False)
+            booking.room_id = room_id
 
-            # Check for conflicting bookings
-            conflicting_bookings = Booking.objects.filter(room=room, check_out__gt=check_in, check_in__lt=check_out)
+            # Check for conflicting bookings for the selected time slot
+            conflicting_bookings = Booking.objects.filter(
+                available_time=booking.available_time,
+                room_id=room_id
+            )
 
             if conflicting_bookings.exists():
-                form.add_error(None, "This room is already booked for the selected time slot.")
+                messages.error(request, "This room is already booked for the selected time slot.")
             else:
-                booking = form.save(commit=False)
-                booking.room = room
-                booking.tenant = request.user.tenant
                 form.save()
-                return redirect('room_details', id=id)
+                return redirect('room_details', id=room_id)
     else:
         form = BookingForm()
 
-    return render(request, 'users/book_room.html', {'form': form})
-
+    return render(request, 'users/add_booking.html', {'form': form})
 
 @login_required
 def cancel_booking(request, id):
-    room = get_object_or_404(Room, pk=id)
-    bookings = Booking.objects.filter(room=room, tenant=request.user.tenant)
+    booking = get_object_or_404(Booking, pk=id)
+    
+    
 
-    if bookings.exists():
-        # If there are multiple bookings for the same user and room, just delete the first one
-        booking_to_cancel = bookings.first()
-        booking_to_cancel.delete()
-        return redirect('booking', id=id)
-    else:
-        # Handle the case where no booking exists
-        return redirect('booking', id=id)
+
+    if request.method == 'POST':
+        booking.delete()
+        return redirect('room_details', id=booking.available_time.room.id)
+
+    return render(request, 'users/cancel_booking.html', {'booking': booking})
+
+@login_required
+def remove_occupation(request, id):
+    if request.method == 'POST' and request.user.is_agent:
+        occupation = get_object_or_404(Occupation, pk=id)
+        room = occupation.room
+        occupation.delete()
+        room.is_occupied = False
+        room.save()
+    return redirect('room_details', id=room.id)

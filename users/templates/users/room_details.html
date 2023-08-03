@@ -1,20 +1,72 @@
 {% extends 'main.html' %} {% block content %}
-<h1>{{room.name}}</h1>
+<h1>{{ room.name }}</h1>
 
-{% if user.is_authenticated %} {% with bookings=user.tenant.booking_set.all %}
-{% for booking in bookings %} {% if booking.room == room %}
-<!-- User has booked this room, show cancel booking button -->
-<a href="{% url 'cancel_booking' room.id %}">
-  <button class="btn btn-danger">Cancel Booking</button>
-</a>
-{% endif %} {% endfor %} {% if not bookings.exists %}
-<!-- User has not booked this room, show book button -->
-<a href="{% url 'booking' room.id %}">
-  <button class="btn btn-primary">Book</button>
-</a>
-{% endif %} {% endwith %} {% else %}
-<!-- User is not logged in, show book button (assuming anonymous users can book rooms) -->
-<a href="{% url 'booking' room.id %}">
-  <button class="btn btn-primary">Book</button>
-</a>
+{% if user.agent %}
+<button
+  type="button"
+  class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700"
+>
+  <a href="{% url 'add_available_time' room.id %}">Add Available Time</a>
+</button>
+{% if not room.is_occupied %}
+<h2>Add Occupation</h2>
+<form method="post">
+  {% csrf_token %} {{ occupation_form }}
+  <button type="submit">Add Occupation</button>
+</form>
+{% endif %} {% endif %} {% if occupation %} {% if user.agent %}
+<h2>Add Bill</h2>
+<form method="post">
+  {% csrf_token %} {{ bill_form.as_p }}
+  <button type="submit">Add Bill</button>
+</form>
+{% endif %}
+
+<h2>Bills</h2>
+<ul>
+  {% for bill in bills %}
+  <li>
+    {{ bill.tenant.first_name }} - ${{ bill.amount }} (Due Date: {{ bill.due_date }})
+  </li>
+  {% endfor %}
+</ul>
+<h2>Occupation</h2>
+<ul>
+  {% for occ in occupation %}
+  <li>
+    {{ occ.tenant.first_name }} {{ occ.tenant.last_name }} - {{ occ.start_date}}
+  </li>
+  {% if user.agent %}
+
+  <form method="post" action="{% url 'remove_occupation' occ.id %}">
+    {% csrf_token %}
+    <button type="submit">Remove Occupation</button>
+  </form>
+  {% endif %} {% endfor %}
+</ul>
+{% endif %} {% if available_times %}
+
+<h2>Available Times</h2>
+<ul>
+  {% for available_time in available_times %}
+  <li>{{ available_time.date }} - {{ available_time.time }}</li>
+  {% endfor %}
+</ul>
+
+{% if is_authenticated_tenant %} {% if not has_booking %}
+<h2>Book this Room</h2>
+<form method="post">
+  {% csrf_token %} {{ form }}
+  <button type="submit">Book</button>
+</form>
+{% else %}
+<h2>Your Booking</h2>
+
+<p>{{ booking.available_time.date }} - {{ booking.available_time.time }}</p>
+<form method="post" action="{% url 'cancel_booking' booking.id %}">
+  {% csrf_token %}
+  <button type="submit">Cancel Booking</button>
+</form>
+{% endif %} {% endif %} {% else %}
+<p>No available times for this room.</p>
 {% endif %} {% endblock %}

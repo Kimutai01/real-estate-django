@@ -1,0 +1,4 @@
+<form method="post" action="{% url 'cancel_booking' id=booking.id %}">
+  {% csrf_token %}
+  <button type="submit">Cancel Booking</button>
+</form>
