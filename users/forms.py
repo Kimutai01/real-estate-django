@@ -1,6 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 from django.db import transaction
-from .models import User,Agent,Tenant,Property,Room,Booking,AvailableTime, Occupation, Bill
+from .models import User,Agent,Tenant,Property,Room,Booking,AvailableTime, Occupation
+from payments.models import Bill
 from django import forms
 from tempus_dominus.widgets import DatePicker
 from django.contrib.auth import get_user_model
@@ -147,22 +148,9 @@ class PropertyForm(forms.ModelForm):
 class RoomForm(forms.ModelForm):
     class Meta:
         model = Room
-        exclude = ('property',)
-        fields=('name',)
+        exclude = ('apartment',)
+        fields=('name', 'price')
         
-# class BookingForm(forms.ModelForm):
-#     widget = {
-#         'check_in': forms.DateTimeInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
-#         'check_out': forms.DateTimeInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
-#     }
-#     class Meta:
-#         model = Booking
-#         exclude = ('tenant', 'room')
-#         fields = ('check_in', 'check_out')
-#         widgets = {
-#             'check_in': forms.DateTimeInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
-#             'check_out': forms.DateTimeInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
-#         }
 
 class AvailableTimeForm(forms.ModelForm):
     date = forms.DateField(
@@ -239,5 +227,9 @@ class BillForm(forms.ModelForm):
     
     class Meta:
         model = Bill
-        exclude = ['room', 'tenant']
-        fields = [ 'name', 'amount', 'due_date']
+        exclude = ['room']
+        # fields = [ 'name', 'amount', 'due_date']
+        
+        widgets = {
+            'tenant':forms.HiddenInput(),
+        }

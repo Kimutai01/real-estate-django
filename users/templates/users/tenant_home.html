@@ -34,15 +34,15 @@
         </p>
         <p class="leading-relaxed text-base">
           <span class="font-bold"> Apartment name: </span>
-          {{ booking.available_time.room.property.name }}
+          {{ booking.available_time.room.apartment.name }}
         </p>
         <p class="leading-relaxed text-base">
           <span class="font-bold"> Location: </span>
-          {{ booking.available_time.room.property.location }}
+          {{ booking.available_time.room.apartment.location }}
         </p>
         <p class="leading-relaxed text-base">
           <span class="font-bold"> Agent: </span>
-          {{ booking.available_time.room.property.agent }}
+          {{ booking.available_time.room.apartment.agent }}
         </p>
       </div>
     </div>
@@ -50,4 +50,6 @@
   </div>
 </div>
 
-{% endblock %}
+{% for bill in bills %} {{bill.amount}} {{bill.due_date}}
+<a href="{% url 'stk-push' bill.pk %}">Pay now</a>
+{% endfor %} {% endblock %}

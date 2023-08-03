@@ -23,6 +23,8 @@ urlpatterns = [
     path('add_available_time/<int:id>/', views.add_available_time, name='add_available_time'),
     path('cancel_booking/<int:id>/', views.cancel_booking, name='cancel_booking'),
     path('remove_occupation/<int:id>/', views.remove_occupation, name='remove_occupation'),
+    path('add_occupation/<int:room_id>/', views.add_occupation, name='add_occupation'),
+    path('add_bill/<int:room_id>/', views.add_bill, name='add_bill'),
     
     
     

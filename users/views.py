@@ -9,7 +9,8 @@ from django.urls import reverse
 from .decorators import tenant_required,agent_required
 from django.http import Http404
 from django.shortcuts import render
-from .models import Property, Booking, AvailableTime, Room, Occupation, Bill
+from .models import Property, Booking, AvailableTime, Room, Occupation
+from payments.models import Bill
 # import messages
 from django.contrib import messages
 #timezone
@@ -72,12 +73,16 @@ def tenant_home(request):
     properties = Property.objects.all()
     bookings = Booking.objects.filter(tenant=request.user.tenant)
     occupation = Occupation.objects.filter(tenant=request.user.tenant)
+    bills = Bill.objects.filter(tenant=request.user.tenant)
+
+    
     print(bookings)
     print(occupation)
     
     context = {
         'properties':properties,
-        'bookings':bookings
+        'bookings':bookings,
+        'bills':bills,
     }
     return render(request,'users/tenant_home.html',context)
 
@@ -97,7 +102,10 @@ def agent_home(request):
 
 def property_details(request, id): 
     apartment = Property.objects.get(id=id)
-    rooms = Room.objects.filter(property=apartment, is_occupied=False)
+    rooms = Room.objects.filter(apartment=apartment)
+    print(f"Agent Rooms: {rooms}")
+    if request.user.is_tenant:
+        rooms = rooms.filter(tenant=None)
 
     context = {
         'apartment': apartment,
@@ -108,7 +116,7 @@ def property_details(request, id):
         form = RoomForm(request.POST)
         if form.is_valid():
             room = form.save(commit=False)
-            room.property = apartment
+            room.apartment = apartment
             room.save()
             return redirect('property_details', id=id)
     else:
@@ -312,3 +320,62 @@ def remove_occupation(request, id):
         room.is_occupied = False
         room.save()
     return redirect('room_details', id=room.id)
+@login_required
+def make_payment(request):
+    tenant = request.user.tenant
+    bills = Bill.objects.filter(tenant=tenant)
+
+    if request.method == 'POST':
+        # Handle payment logic here (e.g., update payment status, save payment info, etc.)
+
+        # Example: Setting all bills as paid
+        for bill in bills:
+            bill.is_paid = True
+            bill.save()
+
+        # Redirect to a success page or any relevant page
+        return redirect('tenant_home')
+
+    context = {
+        'bills': bills,
+        'total_amount': bills.aggregate(Sum('amount'))['amount__sum'] or 0,
+    }
+    return render(request, 'users/make_payment.html', context)
+
+@login_required
+@agent_required
+def add_occupation(request, room_id):
+    if request.method == 'POST':
+        form = OccupationForm(request.POST)
+        if form.is_valid():
+            occupation = form.save(commit=False)
+            room = Room.objects.get(id=room_id)
+            occupation.room = room
+            occupation.save()
+            room.is_occupied = True
+            room.save()
+            return redirect('room_details', id=room_id)
+    else:
+        form = OccupationForm()
+
+    return render(request, 'users/add_occupation.html', {'form': form})
+
+
+@login_required
+@agent_required
+def add_bill(request, room_id):
+    if request.method == 'POST':
+        form = BillForm(request.POST)
+        if form.is_valid():
+            bill = form.save(commit=False)
+            room = Room.objects.get(id=room_id)
+            bill.room = room
+            # Set the tenant based on the room's occupation
+            occupation = Occupation.objects.filter(room=room).first()
+            bill.tenant = occupation.tenant if occupation else None
+            bill.save()
+            return redirect('room_details', id=room_id)
+    else:
+        form = BillForm()
+
+    return render(request, 'users/add_bill.html', {'form': form})

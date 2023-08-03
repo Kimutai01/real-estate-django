@@ -20,6 +20,7 @@ class Tenant(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
+    phone_number = models.CharField(max_length=12, null=True)
     id_number = models.CharField(max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
     def __str__(self):
@@ -37,8 +38,14 @@ class Property(models.Model):
     
 class Room(models.Model):
     name = models.CharField(max_length=50)
-    property = models.ForeignKey(Property, on_delete=models.CASCADE)
-    is_occupied = models.BooleanField(default=False)
+    apartment = models.ForeignKey(Property, on_delete=models.CASCADE)
+    price = models.PositiveBigIntegerField(default=0)
+    tenant = models.ForeignKey(Tenant, on_delete=models.SET_NULL, null=True)
+    
+    @property
+    def is_occupied(self) -> bool:
+        return self.tenant != None
+    
     def __str__(self):
         return self.name
 
@@ -79,16 +86,4 @@ def delete_occupation(sender, instance, **kwargs):
     room.save()
     
 models.signals.post_delete.connect(delete_occupation, sender=Occupation)
-
-
-class Bill(models.Model):
-    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
-    room = models.ForeignKey(Room, on_delete=models.CASCADE)
-    name = models.CharField(max_length=50, default="Rent")
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    due_date = models.DateField()
-    def __str__(self):
-        return self.tenant.first_name + self.room.name
-
-
 

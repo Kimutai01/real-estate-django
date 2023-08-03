@@ -9,24 +9,29 @@
   <a href="{% url 'add_available_time' room.id %}">Add Available Time</a>
 </button>
 {% if not room.is_occupied %}
-<h2>Add Occupation</h2>
-<form method="post">
-  {% csrf_token %} {{ occupation_form }}
-  <button type="submit">Add Occupation</button>
-</form>
+<button
+  type="button"
+  class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700"
+>
+  <a href="{% url 'add_occupation' room.id %}">Add Occupation</a>
+</button>
 {% endif %} {% endif %} {% if occupation %} {% if user.agent %}
-<h2>Add Bill</h2>
-<form method="post">
-  {% csrf_token %} {{ bill_form.as_p }}
-  <button type="submit">Add Bill</button>
-</form>
+
+<!-- Button to add bill -->
+<button
+  type="button"
+  class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700"
+>
+  <a href="{% url 'add_bill' room.id %}">Add Bill</a>
+</button>
 {% endif %}
 
 <h2>Bills</h2>
 <ul>
   {% for bill in bills %}
   <li>
-    {{ bill.tenant.first_name }} - ${{ bill.amount }} (Due Date: {{ bill.due_date }})
+    {{ bill.tenant.first_name }} - {{ bill.amount }} (Due Date: {{ bill.due_date
+    }})
   </li>
   {% endfor %}
 </ul>
