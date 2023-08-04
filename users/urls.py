@@ -13,7 +13,7 @@ urlpatterns = [
     path('login/',views.login_view,name="login"),
     path('tenant_home/',views.tenant_home,name="tenant_home"),
     path('agent_home/',views.agent_home,name="agent_home"),
-    path('agent_home/property/<int:id>/', views.property_details, name='property_details'),
+    path('property_details/<int:id>/', views.property_details, name='property_details'),
     path('logout/',auth_views.LogoutView.as_view(),name="logout"),
    
     # path('create_room/', views.create_room, name='create_room'),
@@ -25,6 +25,9 @@ urlpatterns = [
     path('remove_occupation/<int:id>/', views.remove_occupation, name='remove_occupation'),
     path('add_occupation/<int:room_id>/', views.add_occupation, name='add_occupation'),
     path('add_bill/<int:room_id>/', views.add_bill, name='add_bill'),
+    path('add_room/<pk>/', views.add_room, name='add_room'),
+    path('update_room/<pk>/', views.update_room, name='update_room'),
+    path('delete_room/<pk>/', views.delete_room, name='delete_room'),
     
     
     

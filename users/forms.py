@@ -149,7 +149,7 @@ class RoomForm(forms.ModelForm):
     class Meta:
         model = Room
         exclude = ('apartment',)
-        fields=('name', 'price')
+        fields=('name', 'price', 'tenant')
         
 
 class AvailableTimeForm(forms.ModelForm):

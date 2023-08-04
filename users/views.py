@@ -112,16 +112,6 @@ def property_details(request, id):
         'rooms': rooms,
         'property_id': id,
     }
-    if request.method == 'POST':
-        form = RoomForm(request.POST)
-        if form.is_valid():
-            room = form.save(commit=False)
-            room.apartment = apartment
-            room.save()
-            return redirect('property_details', id=id)
-    else:
-        form = RoomForm()
-    context['form'] = form
     return render(request, 'users/property_details.html', context)
 
 @login_required
@@ -379,3 +369,44 @@ def add_bill(request, room_id):
         form = BillForm()
 
     return render(request, 'users/add_bill.html', {'form': form})
+
+@login_required
+@agent_required
+def add_room(request, pk):
+    apartment = Property.objects.get(pk=pk)
+    print(apartment)
+    if request.method == 'POST':
+        form = RoomForm(request.POST)
+        if form.is_valid():
+            room = form.save(commit=False)
+            room.apartment = apartment
+            room.save()
+            return redirect('property_details', id=pk)
+    else:
+        form = RoomForm()
+        
+    return render(request, 'users/add_room.html', {'form': form})
+
+@login_required
+@agent_required
+def update_room(request, pk):
+    room = Room.objects.get(pk=pk)
+    if request.method == 'POST':
+        form = RoomForm(request.POST, instance=room)
+        if form.is_valid():
+            form.save()
+            return redirect('property_details', id=room.apartment.id)
+    else:
+        form = RoomForm(instance=room)
+        
+    return render(request, 'users/add_room.html', {'form': form})
+
+@login_required
+@agent_required
+def delete_room(request, pk):
+    room = Room.objects.get(pk=pk)
+    if request.method == 'POST':
+        room.delete()
+        return redirect('property_details', id=room.apartment.id)
+    return render(request, 'users/delete_room.html', {'room': room})
+

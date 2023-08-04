@@ -26,7 +26,7 @@ def trigger_stk_push(phone_number: int, amount: int, callback_url: str, account_
         "Password": payment._get_password(),
         "Timestamp": datetime.datetime.now().strftime('%Y%m%d%H%M%S'),
         "TransactionType": payment._get_trans_type(),
-        "Amount": str(amount),
+        "Amount": int(amount),
         "PartyA": phone_number,
         "PartyB": payment.SHORT_CODE,
         "PhoneNumber": phone_number,
@@ -36,7 +36,7 @@ def trigger_stk_push(phone_number: int, amount: int, callback_url: str, account_
     }
 
     response = requests.request("POST", 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest',
-                                headers=headers, data=payload)
+                                headers=headers, json=payload)
     return dict(response.json())
 
 
@@ -44,7 +44,7 @@ def build_payment_request(bill: Bill):
     details = trigger_stk_push(
         phone_number=bill.tenant.phone_number,
         amount=bill.amount,
-        callback_url='example.com',
+        callback_url='https://thinkopal.com/',
         description='Payment',
         account_ref=get_random_string(10)
         )
