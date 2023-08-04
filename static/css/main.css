@@ -1,48 +1,20 @@
-.home-background {
-  background-image: url("https://downloader.la/temp/[Downloader.la]-64c61fc7ea8ef.jpg");
+.hero-bg {
+  background-image: linear-gradient(
+      rgba(255, 255, 255, 0) 60%,
+      #151623 90%,
+      #151623
+    ),
+    linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+    url("../images/home1.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   height: 100vh;
   width: 100%;
-  object-fit: cover;
-}
-.search-bar-container {
-  background-color: white;
-  padding: 10px;
-}
-
-.search-bar {
   display: flex;
   align-items: center;
-  justify-content: center;
-  max-width: 600px;
-  margin: 0 auto;
 }
 
-.search-bar input[type="text"] {
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-right: 10px;
-}
-
-.search-bar select {
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-right: 10px;
-}
-
-.search-bar button {
-  padding: 8px 16px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.search-bar button:hover {
-  background-color: #0056b3;
+h2 {
+  color: red;
 }
