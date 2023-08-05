@@ -214,29 +214,25 @@
   <div class="mx-auto w-[80%] pt-10 flex flex-col md:flex-row gap-10">
     <!--Display latest 3 apartments-->
     {% for apartment in apartments.all|slice:":3" %}
-    <div>
-      <img
-        src="{{ apartment.image.url }}"
-        alt="{{ apartment.name }}"
-        class="w-full"
-      />
-      <div>
-        <h2
-          class="text-[#e3af5a] text-center uppercase font-barlow text-md md:text-lg mt-5"
-        >
-          {{ apartment.name }}
-        </h2>
-        <div class="flex justify-between">
-          <div class="flex font-gilda text-[#fff] items-center">
-            <CiLocationOn color="#fff" size="{25}" />
-            <p class="text-xl">{{ apartment.location }}</p>
-          </div>
-          <div>
-            <p class="font-gilda text-[#fff]">12 vacancies</p>
-          </div>
+     <div>
+        <img
+          src="{{ apartment.image.url }}"
+          alt="{{apartment.name}}"
+          class="h-[250px]"
+        />
+        <div class="bg-[#3e342f] p-5">
+          <h1 class="text-[#e3af5a]">{{ apartment.name }}</h1>
+          <p class="text-[#fff]">{{ apartment.description }}</p>
+          <p class="text-[#fff]">{{ apartment.location }}</p>
+          <button class="bg-[#e3af5a] px-4 py-2 mt-5">
+            {% if user.is_authenticated %}
+            <a href="{% url 'property_details' apartment.id %}">View</a>
+            {% else %}
+            <a href="{% url 'login' %}">View</a>
+            {% endif %}
+          </button>
         </div>
       </div>
-    </div>
     {% endfor %}
   </div>
 </div>
@@ -266,7 +262,7 @@
   </div>
 </div>
 
-<div
+{% comment %} <div
   class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 mt-10 md:mx-auto md:w-[95%] gap-10"
 >
   {% for apartment in apartments %}
@@ -301,6 +297,6 @@
   {% endfor %}
 </div>
 
-</div>
+</div> {% endcomment %}
 
 {% endblock %}

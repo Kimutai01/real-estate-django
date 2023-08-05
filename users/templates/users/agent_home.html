@@ -144,6 +144,7 @@
           </svg>
         </div>
         <div>
+        
           <span class="block text-2xl font-bold">{{occupants.count}}</span>
           <span class="block text-gray-500">Occupants
         </div>
@@ -298,7 +299,7 @@
                 class="h-10 w-10 mr-3 bg-gray-100 rounded-full overflow-hidden"
               >
                 <img
-                  src="https://randomuser.me/api/portraits/women/82.jpg"
+                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png"
                   alt="Annette Watson profile picture"
                 />
               </div>
@@ -403,7 +404,7 @@
         <div class="flex justify-between items-center mt-4">
           <!-- Apartment Price -->
           <span class="text-lg font-semibold text-indigo-600"
-            >${{ apartment.price }}</span
+            >ksh {{ apartment.price }}</span
           >
           <a
             href="{% url 'property_details' apartment.id %}"

@@ -15,7 +15,7 @@ urlpatterns = [
     path('tenant_home/',views.tenant_home,name="tenant_home"),
     path('agent_home/',views.agent_home,name="agent_home"),
     path('property_details/<int:id>/', views.property_details, name='property_details'),
-    path('logout/',auth_views.LogoutView.as_view(),name="logout"),
+    path('logout/',views.logout_view,name="logout-page"),
    
     # path('create_room/', views.create_room, name='create_room'),
     path('search_results/', views.search_results, name='search_results'),

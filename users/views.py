@@ -17,6 +17,7 @@ from django.contrib import messages
 from django.utils import timezone
 #timedelta
 from datetime import timedelta
+from django.views.generic import TemplateView
 
 
 # Create your views here.
@@ -34,6 +35,7 @@ def agent_signup_view(request):
             login(request,user)
             return render(request,'users/agent_home.html')
     else:
+       
         form = AgentSignUpForm()
     return render(request,'users/agent_signup.html',{'form':form})
 
@@ -45,6 +47,7 @@ def tenant_signup_view(request):
             login(request,user)
             return render(request,'users/tenant_home.html')
     else:
+    
         form = TenantSignUpForm()
     return render(request,'users/tenant_signup.html',{'form':form})
 
@@ -55,8 +58,10 @@ def login_view(request):
             # Log the user in
             login(request, form.get_user())
             if request.user.is_agent:
+                messages.success(request, f'Welcome {request.user.username}')
                 return redirect('agent_home')
             elif request.user.is_tenant:
+                messages.success(request, f'Welcome {request.user.username}')
                 return redirect('tenant_home')
 
             
@@ -64,6 +69,8 @@ def login_view(request):
         form = AuthenticationForm()
 
     return render(request, 'users/login.html', {'form': form})
+
+
  
 
 
@@ -132,6 +139,7 @@ def property_details(request, id):
 @login_required
 def logout_view(request):
     logout(request)
+    messages.success(request, f'You have been logged out')
     return redirect('landing_page')
 
 
@@ -158,9 +166,10 @@ def create_property(request):
                 agent = get_object_or_404(Agent, user=user)
                 property_instance.agent = agent
                 property_instance.save()
+                messages.success(request, f'Property created successfully')
                 return redirect('agent_home')
             except IntegrityError:
-             
+                messages.error(request, f'Error creating property')
                 return HttpResponseServerError("Agent not found for the user.")
     else:
         form = PropertyForm()
@@ -228,6 +237,7 @@ def room_details(request, id):
             bill.room = room
             bill.tenant = occupation.first().tenant
             bill.save()
+            messages.success(request, f'Bill created successfully')
             return redirect('room_details', id=id)
 
     if request.method == 'POST' and is_authenticated_tenant:
@@ -236,6 +246,7 @@ def room_details(request, id):
             booking = form.save(commit=False)
             booking.tenant = request.user.tenant
             booking.save()
+            messages.success(request, f'Booking created successfully')
             return redirect('room_details', id=id)
 
     context = {
@@ -266,8 +277,10 @@ def add_available_time(request, id):
             available_time.agent = user.agent
             available_time.room = room
             form.save()
+            messages.success(request, f'Available time created successfully')
             return redirect('room_details', id=id)
     else:
+        messages.error(request, f'Error creating available time')  
         form = AvailableTimeForm()
         
     return render(request, 'users/add_available_time.html', {'form': form})
@@ -312,6 +325,7 @@ def cancel_booking(request, id):
 
     if request.method == 'POST':
         booking.delete()
+        messages.success(request, f'Booking cancelled successfully')
         return redirect('room_details', id=booking.available_time.room.id)
 
     return render(request, 'users/cancel_booking.html', {'booking': booking})
@@ -324,6 +338,7 @@ def remove_occupation(request, id):
         occupation.delete()
         room.is_occupied = False
         room.save()
+        messages.success(request, f'Occupant removed successfully')
     return redirect('room_details', id=room.id)
 @login_required
 def make_payment(request):
@@ -339,11 +354,11 @@ def make_payment(request):
             bill.save()
 
         # Redirect to a success page or any relevant page
+        messages.success(request, f'Payment made successfully')
         return redirect('tenant_home')
 
     context = {
         'bills': bills,
-        'total_amount': bills.aggregate(Sum('amount'))['amount__sum'] or 0,
     }
     return render(request, 'users/make_payment.html', context)
 
@@ -359,6 +374,7 @@ def add_occupation(request, room_id):
             occupation.save()
             room.is_occupied = True
             room.save()
+            messages.success(request, f'Occupant added successfully')
             return redirect('room_details', id=room_id)
     else:
         form = OccupationForm()
@@ -452,6 +468,7 @@ def delete_apartment(request, pk):
     apartment = Apartment.objects.get(pk=pk)
     if request.method == 'POST':
         apartment.delete()
+        messages.success(request, f'Apartment deleted successfully')
         return redirect('listings')
     return render(request, 'users/delete_apartment.html', {'apartment': apartment})
 
@@ -461,6 +478,12 @@ def deleteBill(request, pk):
     bill = Bill.objects.get(pk=pk)
     if request.method == 'POST':
         bill.delete()
+        messages.success(request, f'Bill deleted successfully')
         return redirect('room_details', id=bill.room.id)
     return render(request, 'users/delete_bill.html', {'bill': bill})
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('landing_page')
 

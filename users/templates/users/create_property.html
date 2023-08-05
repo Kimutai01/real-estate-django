@@ -1,29 +1,167 @@
 {% extends 'main.html' %} {% block content %}
-<h1 class="text-2xl font-bold mb-4">Create Property</h1>
-<form
-  action="{% url 'create_property' %}"
-  method="POST"
-  class="max-w-md mx-auto"
-  enctype="multipart/form-data"
->
-  {% csrf_token %}
-  <div class="mb-4">{{ form.name.label_tag }} {{ form.name }}</div>
-  <div class="mb-4">{{ form.location.label_tag }} {{ form.location }}</div>
-  <div class="mb-4">{{ form.image.label_tag }} {{ form.image }}</div>
-  <div class="mb-4">{{ form.price.label_tag }} {{ form.price }}</div>
 
-  <div class="mb-4">
-    {{ form.description.label_tag }} {{ form.description }}
+<div class="flex justify-center bg-[#161616] pt-20 items-center">
+  <div class="max-w-md w-full px-6 py-4 bg-[#161616] rounded-lg shadow-md">
+    <h1
+      class="text-2xl font-bold mb-4 text-white text-center uppercase font-bold"
+      style="font-family: 'Gilda Display', serif"
+    >
+      Create Property
+    </h1>
+    <form
+      action="{% url 'create_property' %}"
+      method="POST"
+      class="max-w-md mx-auto"
+      enctype="multipart/form-data"
+    >
+      {% csrf_token %}
+      <div class="mb-4">
+        <label
+          for="{{ form.name.id_for_label }}"
+          class="block text-sm font-medium text-white uppercase"
+          >Name</label
+        >
+        <input
+          type="text"
+          name="{{ form.name.name }}"
+          id="{{ form.name.id_for_label }}"
+          class="bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded w-full"
+          placeholder="Name"
+        />
+      </div>
+      <div class="mb-4">
+        <label
+          for="{{ form.location.id_for_label }}"
+          class="block text-sm font-medium text-white uppercase"
+          >Location</label
+        >
+        <input
+          type="text"
+          name="{{ form.location.name }}"
+          id="{{ form.location.id_for_label }}"
+          class="bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded w-full"
+          placeholder="Location"
+        />
+      </div>
+      <div class="mb-4">
+        <label
+          for="{{ form.image.id_for_label }}"
+          class="block text-sm font-medium text-white uppercase"
+          >Image</label
+        >
+        <input
+          type="file"
+          name="{{ form.image.name }}"
+          id="{{ form.image.id_for_label }}"
+          class="bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded w-full"
+        />
+      </div>
+
+      <div class="mb-4">
+        <label
+          for="{{ form.price.id_for_label }}"
+          class="block text-sm font-medium text-white uppercase"
+          >Price</label
+        >
+        <input
+          type="number"
+          name="{{ form.price.name }}"
+          id="{{ form.price.id_for_label }}"
+          class="bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded w-full"
+          placeholder="Price"
+        />
+      </div>
+
+      <div class="mb-4">
+        <label
+          for="{{ form.description.id_for_label }}"
+          class="block text-sm font-medium text-white uppercase"
+          >Description</label
+        >
+        <textarea
+          name="{{ form.description.name }}"
+          id="{{ form.description.id_for_label }}"
+          class="bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded w-full"
+          placeholder="Description"
+        ></textarea>
+      </div>
+      <div class="mb-4">
+        <label
+          for="{{ form.street_1.id_for_label }}"
+          class="block text-sm font-medium text-white uppercase"
+          >Street 1</label
+        >
+        <input
+          type="text"
+          name="{{ form.street_1.name }}"
+          id="{{ form.street_1.id_for_label }}"
+          class="bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded w-full"
+          placeholder="Street 1"
+        />
+      </div>
+      <div class="mb-4">
+        <label
+          for="{{ form.street_2.id_for_label }}"
+          class="block text-sm font-medium text-white uppercase"
+          >Street 2</label
+        >
+        <input
+          type="text"
+          name="{{ form.street_2.name }}"
+          id="{{ form.street_2.id_for_label }}"
+          class="bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded w-full"
+          placeholder="Street 2"
+        />
+      </div>
+      <div class="mb-4">
+        <label
+          for="{{ form.zip_code.id_for_label }}"
+          class="block text-sm font-medium text-white uppercase"
+          >Zip Code</label
+        >
+        <input
+          type="text"
+          name="{{ form.zip_code.name }}"
+          id="{{ form.zip_code.id_for_label }}"
+          class="bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded w-full"
+          placeholder="Zip Code"
+        />
+      </div>
+
+      <div class="mb-4">
+        <label
+          for="{{ form.city.id_for_label }}"
+          class="block text-sm font-medium text-white uppercase"
+          >City</label
+        >
+        <input
+          type="text"
+          name="{{ form.city.name }}"
+          id="{{ form.city.id_for_label }}"
+          class="bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded w-full"
+          placeholder="City"
+        />
+      </div>
+      <div class="mb-4">
+        <label
+          for="{{ form.county.id_for_label }}"
+          class="block text-sm font-medium text-white uppercase"
+          >County</label
+        >
+        <input
+          type="text"
+          name="{{ form.county.name }}"
+          id="{{ form.county.id_for_label }}"
+          class="bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded w-full"
+          placeholder="County"
+        />
+      </div>
+      <input
+        type="submit"
+        value="Create"
+        class="w-full bg-[#e3af5a] text-white px-4 py-2 rounded hover:bg-[#fff] hover:text-[#161616]"
+      />
+    </form>
   </div>
-  <div class="mb-4">{{ form.street_1.label_tag }} {{ form.street_1}}</div>
-  <div class="mb-4">{{ form.street_2.label_tag }} {{ form.street_2}}</div>
-  <div class="mb-4">{{ form.zip_code.label_tag }} {{ form.zip_code }}</div>
-  <div class="mb-4">{{ form.city.label_tag }} {{ form.city }}</div>
-  <div class="mb-4">{{ form.county.label_tag }} {{ form.county}}</div>
-  <input
-    type="submit"
-    value="Create"
-    class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-  />
-</form>
+</div>
 {% endblock %}

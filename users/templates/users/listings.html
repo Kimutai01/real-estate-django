@@ -64,7 +64,11 @@
           <p class="text-[#fff]">{{ apartment.description }}</p>
           <p class="text-[#fff]">{{ apartment.location }}</p>
           <button class="bg-[#e3af5a] px-4 py-2 mt-5">
+            {% if user.is_authenticated %}
             <a href="{% url 'property_details' apartment.id %}">View</a>
+            {% else %}
+            <a href="{% url 'login' %}">View</a>
+            {% endif %}
           </button>
         </div>
       </div>

@@ -12,7 +12,7 @@
   <div class="px-5 md:px-20">
     <div>
       <button
-        class="font-barlow uppercase ml-28 md:ml-0 text-[#e3af5a] text-center md:text-start px-4 py-2 mt-10 w-40 bg-[#3e342f] leading-9"
+        class="font-barlow uppercase ml-28 md:ml-0 text-[#e3af5a] text-center md:text-start px-4 py-2 mt-10 w-60 bg-[#3e342f] leading-9"
       >
         {{ room.apartment.agent }}
       </button>
@@ -34,15 +34,7 @@
       >
         <a href="{% url 'add_bill' room.id %}">Add Bill</a>
       </button>
-      {% endif %} {% endif %} {% if is_authenticated_tenant and not occupation %}
-
-      <form method="post">
-        {% csrf_token %} {{ form }}
-        <button type="submit">Book</button>
-      </form>
-
-      {% endif %}
-    </div>
+      {% endif %} {% endif %} 
     <h1
       class="text-[#fff] text-center md:text-start font-gilda text-4xl md:text-6xl mt-5"
     >

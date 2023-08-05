@@ -1,9 +1,65 @@
 {% extends 'main.html' %} {% block content %}
-<h1>Add room</h1>
-<form action="" method="post" class="mt-40" enctype="multipart/form-data">
-  {% csrf_token %} {{ form.as_p }}
+<div class="hero-bg">
+  <div class="mx-auto w-[30%] mt-8">
+    <h1 class="text-3xl font-bold mb-8 text-center text-white">Add room</h1>
+    <div class="w-full px-12 pt-5 bg-[#161616] rounded-lg shadow-md">
+      <form action="" method="post" class="py-10" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label
+          for="{{ form.name.id_for_label }}"
+          class="block text-sm font-medium text-white uppercase"
+          >Name</label
+        >
+        <input
+          type="text"
+          name="{{ form.name.name }}"
+          id="{{ form.name.id_for_label }}"
+          class="w-full px-3 py-2 mb-4 bg-[#161616] border border-[#303030] rounded-lg text-white focus:outline-none focus:border-[#303030]"
+          placeholder="Name"
+        />
+        <label
+          for="{{ form.price.id_for_label }}"
+          class="block text-sm font-medium text-white uppercase"
+          >Price</label
+        >
+        <input
+          type="text"
+          name="{{ form.price.name }}"
+          id="{{ form.price.id_for_label }}"
+          class="w-full px-3 py-2 mb-4 bg-[#161616] border border-[#303030] rounded-lg text-white focus:outline-none focus:border-[#303030]"
+          placeholder="Price"
+        />
+        <label
+          for="{{ form.description.id_for_label }}"
+          class="block text-sm font-medium text-white uppercase"
+          >Description</label
+        >
+        <textarea
+          name="{{ form.description.name }}"
+          id="{{ form.description.id_for_label }}"
+          class="w-full px-3 py-2 mb-4 bg-[#161616] border border-[#303030] rounded-lg text-white focus:outline-none focus:border-[#303030]"
+          placeholder="Description"
+        ></textarea>
+        <label
+          for="{{ form.image.id_for_label }}"
+          class="block text-sm font-medium text-white uppercase"
+          >Image</label
+        >
+        <input
+          type="file"
+          name="{{ form.image.name }}"
+          id="{{ form.image.id_for_label }}"
+          class="w-full px-3 py-2 mb-4 bg-[#161616] border border-[#303030] rounded-lg text-white focus:outline-none focus:border-[#303030]"
+          placeholder="Image"
+        />
 
-  <input type="submit" value="Add" />
-</form>
-
+        <input
+          type="submit"
+          value="Add"
+          class="w-full bg-[#e3af5a] text-white px-4 py-2 rounded hover:bg-[#fff] hover:text-[#161616]"
+        />
+      </form>
+    </div>
+  </div>
+</div>
 {% endblock %}
