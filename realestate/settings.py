@@ -18,7 +18,7 @@ import django_heroku
 import dj_database_url
 
 
-django_heroku.settings(locals())
+
 
 
 
@@ -62,6 +62,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'realestate.urls'
+
+
 
 TEMPLATES = [
     {
@@ -160,3 +162,5 @@ AUTH_USER_MODEL = 'users.User'
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = 'login'
 LOGOUT_REDIRECT_URL = 'landing_page'
+
+django_heroku.settings(locals())
