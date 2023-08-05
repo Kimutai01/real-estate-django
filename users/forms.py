@@ -1,6 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 from django.db import transaction
-from .models import User,Agent,Tenant,Property,Room,Booking,AvailableTime, Occupation
+from .models import User,Agent,Tenant,Apartment,Room,Booking,AvailableTime, Occupation
 from payments.models import Bill
 from django import forms
 from tempus_dominus.widgets import DatePicker
@@ -131,9 +131,9 @@ class LoginForm(AuthenticationForm):
         
 class PropertyForm(forms.ModelForm):
     class Meta:
-        model = Property
+        model = Apartment
         exclude = ('agent',)
-        fields = ('name','location','image','price','description')
+        fields = ('name','location','image','price','description','street_1','street_2', 'zip_code','city','county')
         
         widgets = {
             'name': forms.TextInput(attrs={'class': 'w-full px-3 py-2 rounded border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring focus:border-blue-500'}),
@@ -142,6 +142,12 @@ class PropertyForm(forms.ModelForm):
             'price': forms.NumberInput(attrs={'class': 'w-full px-3 py-2 rounded border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring focus:border-blue-500'}),
             'description': forms.Textarea(attrs={'class': 'w-full px-3 py-2 rounded border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring focus:border-blue-500'}),
             'agent': forms.Select(attrs={'class': 'w-full px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring focus:border-blue-500'}),
+            'street_1': forms.TextInput(attrs={'class': 'w-full px-3 py-2 rounded border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring focus:border-blue-500'}),
+            'street_2': forms.TextInput(attrs={'class': 'w-full px-3 py-2 rounded border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring focus:border-blue-500'}),
+            'zip_code': forms.TextInput(attrs={'class': 'w-full px-3 py-2 rounded border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring focus:border-blue-500'}),
+            'city': forms.TextInput(attrs={'class': 'w-full px-3 py-2 rounded border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring focus:border-blue-500'}),
+            'county': forms.TextInput(attrs={'class': 'w-full px-3 py-2 rounded border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring focus:border-blue-500'}),
+            
         }
         
         
@@ -149,7 +155,7 @@ class RoomForm(forms.ModelForm):
     class Meta:
         model = Room
         exclude = ('apartment',)
-        fields=('name', 'price', 'tenant')
+        fields=('name', 'price',)
         
 
 class AvailableTimeForm(forms.ModelForm):

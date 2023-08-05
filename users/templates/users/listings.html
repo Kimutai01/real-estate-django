@@ -1,0 +1,75 @@
+{% extends 'main.html' %} {% load static %} {% block content %}
+<div class="bg-[#151623] pt-28 pb-20">
+  <div class="px-5 md:px-20">
+    <button
+      class="font-barlow uppercase ml-28 md:ml-0 text-[#e3af5a] text-center md:text-start px-4 py-2 mt-10 w-40 bg-[#3e342f] leading-9"
+    >
+      All listings
+    </button>
+    <h1
+      class="text-[#fff] text-center md:text-start font-gilda text-4xl md:text-6xl mt-5"
+    >
+      Discover Your Preferred Residences
+    </h1>
+    <p
+      class="text-[#fff] font-barlow text-lg mt-5 text-center md:text-start md:w-[60%]"
+    >
+      Our aim is to assist you in finding the perfect home, ensuring a positive
+      experience throughout your journey with us, from initial search to
+      finalization.
+    </p>
+  </div>
+  <div class="flex flex-col md:flex-row mx-auto w-[90%] mt-10">
+    <div
+      class="bg-[#222222] flex flex-row md:flex-col md:sticky top-16 md:h-screen p-10"
+    >
+      <div>
+        <h1 class="text-[#fff] text-2xl font-gilda font-medium mt-5">
+          Locations
+        </h1>
+        <ul>
+          <li class="text-[#fff] font-barlow text-lg mt-5">Nairobi</li>
+          <li class="text-[#fff] font-barlow text-lg mt-5">Mombasa</li>
+          <li class="text-[#fff] font-barlow text-lg mt-5">Kisumu</li>
+          <li class="text-[#fff] font-barlow text-lg mt-5">Nakuru</li>
+          <li class="text-[#fff] font-barlow text-lg mt-5">Eldoret</li>
+        </ul>
+      </div>
+      <div>
+        <h1 class="text-[#fff] text-2xl font-gilda font-medium mt-5">
+          Property Type
+        </h1>
+
+        <ul>
+          <li class="text-[#fff] font-barlow text-lg mt-5">Apartments</li>
+          <li class="text-[#fff] font-barlow text-lg mt-5">Houses</li>
+          <li class="text-[#fff] font-barlow text-lg mt-5">Offices</li>
+          <li class="text-[#fff] font-barlow text-lg mt-5">Shops</li>
+          <li class="text-[#fff] font-barlow text-lg mt-5">Land</li>
+        </ul>
+      </div>
+    </div>
+    <div
+      class="mx-auto md:w-[80%] w-[95%] pt-10 gap-10 grid md:grid-cols-3 grid-cols-1"
+    >
+      {% for apartment in apartments %}
+      <div>
+        <img
+          src="{{ apartment.image.url }}"
+          alt="{{apartment.name}}"
+          class="h-[250px]"
+        />
+        <div class="bg-[#3e342f] p-5">
+          <h1 class="text-[#e3af5a]">{{ apartment.name }}</h1>
+          <p class="text-[#fff]">{{ apartment.description }}</p>
+          <p class="text-[#fff]">{{ apartment.location }}</p>
+          <button class="bg-[#e3af5a] px-4 py-2 mt-5">
+            <a href="{% url 'property_details' apartment.id %}">View</a>
+          </button>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

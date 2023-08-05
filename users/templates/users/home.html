@@ -1,21 +1,265 @@
 {% extends 'main.html' %} {% load static %} {% block content %}
 
-<div className="hero-bg">
+<div class="hero-bg">
   <div
-    className="flex flex-col mx-auto w-[80%] md:mx-0 md:text-start  text-center md:pl-28"
+    class="flex flex-col mx-auto w-[80%] md:mx-0 md:text-start text-center md:pl-28"
   >
-    <h2 className="text-[#e3af5a] uppercase font-barlow">
-      Find your dream home
-    </h2>
-    <h1 className="text-[#fff] mt-5 font-gilda text-6xl">
-      Rent affordable houses
-    </h1>
-    <p className="text-2xl text-[#fff]  font-gilda md:w-[60%] mt-5">
+    <h2 class="text-[#e3af5a] uppercase font-barlow">Find your dream home</h2>
+    <h1 class="text-[#fff] mt-5 font-gilda text-6xl">Rent affordable houses</h1>
+    <p class="text-2xl text-[#fff] font-gilda md:w-[60%] mt-5">
       The houses listed on our website are affordable and are located in
       strategic places within your area and at affordable prices
     </p>
     <button
-      className="bg-[#fff] font-barlow uppercase ml-20 md:ml-0 text-[#151623]  px-4 py-4 mt-10 w-44 rounded-md"
+      class="bg-[#fff] font-barlow uppercase ml-20 md:ml-0 text-[#151623] px-4 py-4 mt-10 w-44 rounded-md"
+    >
+      Explore houses
+    </button>
+  </div>
+</div>
+
+<!-- About -->
+<div class="bg-[#151623]">
+  <div class="">
+    <h2
+      class="text-[#e3af5a] text-center uppercase font-barlow text-md md:text-lg"
+    >
+      Discover
+    </h2>
+    <h1
+      class="font-gilda text-center mt-5 text-4xl mx-auto w-[65%] md:w-[40%] md:text-5xl text-[#ffffff]"
+    >
+      The World Of Real Estate
+    </h1>
+    <img
+      src="{% static 'images/two.png' %}"
+      alt="two"
+      class="mx-auto mt-8 h-20 w-20"
+    />
+    <p
+      class="text-center text-[#fff] mx-auto md:w-[35%] w-[88%] mt-8 font-gilda text-xl md:text-2xl"
+    >
+      We work with several agents and landlords to provide you with the best
+      houses at affordable prices and in strategic locations
+    </p>
+  </div>
+
+  <div>
+    <div
+      class="flex mx-auto md:w-[80%] gap-10 mt-10 w-[90%] flex-col m md:flex-row"
+    >
+      <div>
+        <div class="border-b border-[#d5a457]">
+          <img
+            src="{% static 'images/couch.jpg' %}"
+            alt="couch"
+            class="h-[400px]"
+          />
+        </div>
+        <h2 class="text-[#fff] text-center font-gilda capitalize text-2xl py-5">
+          Easy viewing of houses
+        </h2>
+        <p class="text-[#9c9ca7] font-barlow text-center mx-auto w-[95%]">
+          You can schedule a viewing of any house you like at your convenient
+          time to prevent any inconveniences
+        </p>
+      </div>
+      <div>
+        <div class="border-b border-[#d5a457]">
+          <img
+            src="{% static 'images/couch.jpg' %}"
+            alt="couch"
+            class="h-[400px]"
+          />
+        </div>
+        <h2 class="text-[#fff] text-center font-gilda capitalize text-2xl py-5">
+          Easy viewing of houses
+        </h2>
+        <p class="text-[#9c9ca7] font-barlow text-center mx-auto w-[95%]">
+          You can schedule a viewing of any house you like at your convenient
+          time to prevent any inconveniences
+        </p>
+      </div>
+      <div>
+        <div class="border-b border-[#d5a457]">
+          <img
+            src="{% static 'images/couch.jpg' %}"
+            alt="couch"
+            class="h-[400px]"
+          />
+        </div>
+        <h2 class="text-[#fff] text-center font-gilda capitalize text-2xl py-5">
+          Easy viewing of houses
+        </h2>
+        <p class="text-[#9c9ca7] font-barlow text-center mx-auto w-[95%]">
+          You can schedule a viewing of any house you like at your convenient
+          time to prevent any inconveniences
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Description-->
+<div class="bg-[#151623] pt-20">
+  <div>
+    <img
+      src="{% static 'images/arc.png' %}"
+      alt="arc"
+      class="mx-auto h-16 w-16"
+    />
+  </div>
+
+  <div class="pt-10 mx-auto flex flex-col gap-10 md:w-[80%] w-[80%]">
+    <div class="flex flex-col md:flex-row gap-10">
+      <div class="w-[100%]">
+        <img src="{% static 'images/hou.jpg' %}" alt="hou" class="w-full" />
+      </div>
+      <div>
+        <p
+          class="text-[#e3af5a] uppercase font-barlow text-center md:text-start"
+        >
+          BEAUTIFUL PROPERTY
+        </p>
+        <h2
+          class="text-[#fff] mt-5 font-gilda text-4xl text-center md:text-start"
+        >
+          Houses all over the country
+        </h2>
+        <p
+          class="text-xl text-[#fff] font-gilda text-center md:text-start mt-5"
+        >
+          Get the ultimate experience of renting a house with us. We have houses
+          all over the country and you can rent them at affordable prices
+        </p>
+        <button
+          class="bg-[#fff] font-barlow uppercase ml-20 md:ml-0 text-[#151623] px-4 py-4 mt-10 w-44 rounded-md hover:bg-[#e3af5a]"
+        >
+          Explore houses
+        </button>
+      </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row-reverse gap-10">
+      <div class="w-[100%]">
+        <img src="{% static 'images/hou.jpg' %}" alt="hou" class="w-full" />
+      </div>
+      <div>
+        <p
+          class="text-[#e3af5a] uppercase font-barlow text-center md:text-start"
+        >
+          BEAUTIFUL PROPERTY
+        </p>
+        <h2
+          class="text-[#fff] mt-5 font-gilda text-4xl text-center md:text-start"
+        >
+          Houses all over the country
+        </h2>
+        <p
+          class="text-xl text-[#fff] font-gilda text-center md:text-start mt-5"
+        >
+          Get the ultimate experience of renting a house with us. We have houses
+          all over the country and you can rent them at affordable prices
+        </p>
+        <button
+          class="bg-[#fff] font-barlow uppercase ml-20 md:ml-0 text-[#151623] px-4 py-4 mt-10 w-44 rounded-md hover:bg-[#e3af5a]"
+        >
+          Explore houses
+        </button>
+      </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row gap-10">
+      <div class="w-[100%]">
+        <img src="{% static 'images/hou.jpg' %}" alt="hou" class="w-full" />
+      </div>
+      <div>
+        <p
+          class="text-[#e3af5a] uppercase font-barlow text-center md:text-start"
+        >
+          BEAUTIFUL PROPERTY
+        </p>
+        <h2
+          class="text-[#fff] mt-5 font-gilda text-4xl text-center md:text-start"
+        >
+          Houses all over the country
+        </h2>
+        <p
+          class="text-xl text-[#fff] font-gilda text-center md:text-start mt-5"
+        >
+          Get the ultimate experience of renting a house with us. We have houses
+          all over the country and you can rent them at affordable prices
+        </p>
+        <button
+          class="bg-[#fff] font-barlow uppercase ml-20 md:ml-0 text-[#151623] px-4 py-4 mt-10 w-44 rounded-md hover:bg-[#e3af5a]"
+        >
+          Explore houses
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Apartments-->
+
+<div class="bg-[#151623] pt-20">
+  <div class=" ">
+    <img
+      src="{% static 'images/arc.png' %}"
+      alt="arc"
+      class="mx-auto h-16 w-16"
+    />
+  </div>
+
+  <div class="mx-auto w-[80%] pt-10 flex flex-col md:flex-row gap-10">
+    <!--Display latest 3 apartments-->
+    {% for apartment in apartments.all|slice:":3" %}
+    <div>
+      <img
+        src="{{ apartment.image.url }}"
+        alt="{{ apartment.name }}"
+        class="w-full"
+      />
+      <div>
+        <h2
+          class="text-[#e3af5a] text-center uppercase font-barlow text-md md:text-lg mt-5"
+        >
+          {{ apartment.name }}
+        </h2>
+        <div class="flex justify-between">
+          <div class="flex font-gilda text-[#fff] items-center">
+            <CiLocationOn color="#fff" size="{25}" />
+            <p class="text-xl">{{ apartment.location }}</p>
+          </div>
+          <div>
+            <p class="font-gilda text-[#fff]">12 vacancies</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="bg-[#151623] pt-10 pb-20">
+  <div
+    class="bg-[#222] mx-auto w-[90%] mt-10 flex flex-col items-center pb-10 border-b border-[#d5a457] justify-center"
+  >
+    <img
+      src="{% static 'images/two.png' %}"
+      alt="two"
+      class="mx-auto mt-8 h-20 w-20"
+    />
+    <h2 class="text-[#fff] mt-5 font-gilda text-4xl">
+      Your Satisfaction Is Paramount
+    </h2>
+    <p class="w-[50%] font-barlow text-[#fff] mt-10 text-lg text-center">
+      With an unwavering commitment to excellence, our team of experienced
+      professionals is ready to provide personalized assistance and guidance
+      throughout your real estate journey
+    </p>
+    <button
+      class="hover:bg-[#fff] font-barlow uppercase ml-20 md:ml-0 text-[#151623] px-4 py-4 mt-10 w-44 rounded-md bg-[#e3af5a]"
     >
       Explore houses
     </button>
@@ -55,6 +299,8 @@
     </div>
   </div>
   {% endfor %}
+</div>
+
 </div>
 
 {% endblock %}

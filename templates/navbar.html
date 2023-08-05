@@ -1,88 +1,157 @@
-<header
-  class="text-gray-600 body-font bg-[#f7faff]"
-  style="font-family: 'Plus Jakarta Sans', sans-serif"
+{% load static %}
+
+<div
+  style="background-color: transparent"
+  class="fixed w-full h-20 z-[100] md:px-24"
 >
   <div
-    class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center"
+    class="flex justify-between items-center w-full h-full md:px-4 py-4 px-2 2xl:px-16 rounded"
   >
-    <a
-      class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        stroke="currentColor"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="2"
-        class="w-10 h-10 text-white p-2 bg-indigo-500 rounded-full"
-        viewBox="0 0 24 24"
-      >
-        <path
-          d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
-        ></path>
-      </svg>
-      <span class="ml-3 text-xl">Tenant management system</span>
-    </a>
-    <nav
-      class="md:mr-auto md:ml-4 md:py-1 md:pl-4 md:border-l md:border-gray-400 flex flex-wrap items-center text-base justify-center"
-    >
-      <a class="mr-5 hover:text-gray-900">
-        {% if user.is_authenticated and user.is_agent %}
-        <a class="mr-5" href="{% url 'agent_home' %}">Home</a>
-        {% elif user.is_authenticated and user.is_tenant %}
-        <a class="mr-5" href="{% url 'tenant_home' %}">Home</a>
-
-        {% endif %}
-      </a>
-      <a class="mr-5" href="{% url 'landing_page' %}">Listings</a>
+    <div class="">
       <a
-        class="mr-5 hover:text-gray-900"
-        href="{% if user.is_authenticated and user.is_agent %}{% url 'agent_home' %}{% else %}{% url 'agent_signup' %}{% endif %}"
-        >Agent</a
+        class="text-[#eee] font-bold text-3xl font-allura"
+        href="{% url 'landing_page' %}"
+        >Muru properties</a
       >
-      <a
-        class="mr-5 hover:text-gray-900"
-        href="{% if user.is_authenticated and user.is_tenant %}{% url 'tenant_home' %}{% else %}{% url 'tenant_signup' %}{% endif %}"
-        >Tenant</a
-      >
-    </nav>
-    {% if user.is_authenticated %}
-    <button
-      class="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0"
-    >
-      <a href="{% url 'logout' %}">
-        Logout
-        <svg
-          fill="none"
-          stroke="currentColor"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          class="w-4 h-4 ml-1"
-          viewBox="0 0 24 24"
+    </div>
+    <div>
+      <ul class="hidden md:flex font-barlow" style="color: #ecf0f3">
+        <li
+          class="ml-10 font-medium text-[#eee] uppercase text-sm hover:text-[#cda873] hover:scale-105 transition-colors duration-300"
         >
-          <path d="M5 12h14M12 5l7 7-7 7"></path>
-        </svg>
-      </a>
-    </button>
-    {% else %}
-    <button
-      class="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0"
-    >
-      Login
-      <svg
-        fill="none"
-        stroke="currentColor"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="2"
-        class="w-4 h-4 ml-1"
-        viewBox="0 0 24 24"
+          {% if user.is_authenticated and user.is_agent %}
+          <a href="{% url 'agent_home' %}">Home</a>
+          {% elif user.is_authenticated and user.is_tenant %}
+          <a href="{% url 'tenant_home' %}">Home</a>
+          {% endif %}
+        </li>
+
+        <li
+          class="ml-10 font-medium text-[#eee] uppercase text-sm hover:text-[#cda873] hover:scale-105 transition-all duration-all hover:border-y-black"
+        >
+          <a href="{% url 'listings' %}">Listings</a>
+        </li>
+        <li
+          class="ml-10 font-medium text-[#eee] uppercase text-sm hover:text-[#cda873] hover:scale-105 transition-all duration-all hover:border-y-black"
+        >
+          <a
+            href="{% if user.is_authenticated and user.is_tenant %}{% url 'tenant_home' %}{% else %}{% url 'tenant_signup' %}{% endif %}"
+            >Tenant</a
+          >
+        </li>
+        <li
+          class="ml-10 font-medium text-[#eee] uppercase text-sm hover:text-[#cda873] hover:scale-105 transition-all duration-all hover:border-y-black"
+        >
+          <a
+            href="{% if user.is_authenticated and user.is_agent %}{% url 'agent_home' %}{% else %}{% url 'agent_signup' %}{% endif %}"
+            >Agents</a
+          >
+        </li>
+        <li
+          class="ml-10 font-medium text-[#eee] uppercase text-sm hover:text-[#cda873] hover:scale-105 transition-all duration-all hover:border-y-black"
+        >
+          <a href="">Contact us</a>
+        </li>
+      </ul>
+      <div
+        class="md:hidden flex justify-between items-center w-full h-full"
+        onclick="handleNav()"
+        style="color: #ecf0f3"
       >
-        <path d="M5 12h14M12 5l7 7-7 7"></path>
-      </svg>
-    </button>
-    {% endif %}
+        <i class="fa fa-bars text-[#fff] text-3xl"></i>
+      </div>
+    </div>
+    <div class="hidden md:block">
+      <div>
+        {% if user.is_authenticated %}
+        <a href="{% url 'logout' %}">
+          <button
+            class="uppercase text-[#000] font-light font-barlow bg-[#fff] px-4 py-2 hover:bg-[#cda873] transition-all duration-300"
+          >
+            Logout
+          </button>
+        </a>
+
+        {% else %}
+        <a href="">
+          <button
+            class="uppercase text-[#000] font-light font-barlow bg-[#fff] px-4 py-2 hover:bg-[#cda873] transition-all duration-300"
+          >
+            <a href="{% url 'login' %}"> Login </a>
+          </button>
+        </a>
+        {% endif %}
+      </div>
+    </div>
   </div>
-</header>
+
+  <div
+    class="{% if nav %}md:hidden fixed left-0 top-0 w-full h-screen bg-black/70{% endif %}"
+  >
+    <div
+      class="{% if nav %}md:hidden fixed left-0 top-0 w-[100%] sm:w-[60%] md:w-[45%] h-screen bg-[#000]/60 text-white p-2 ease-in duration-500{% else %}fixed left-[-100%] top-0 p-10 ease-in duration-500{% endif %}"
+    >
+      <div>
+        <div class="flex justify-between items-center w-full mt-3 px-3">
+          <a class="text-[#eee] font-bold text-3xl font-allura" href=""
+            >Muru properties</a
+          >
+          <div
+            onclick="handleNav()"
+            class="cursor-pointer text-[#fff] text-3xl"
+          >
+            <i class="fa fa-times"></i>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="flex flex-col items-center font-barlow py-4">
+          <ul>
+            <li class="ml-3 mt-10 text-xl uppercase">
+              <a href="" onclick="handleNav()">Home</a>
+            </li>
+            <li class="ml-3 mt-10 text-xl uppercase">
+              <a href="" onclick="handleNav()">About</a>
+            </li>
+            <li class="py-4 mt-10 text-xl ml-3 cursor-pointer uppercase">
+              <a href="" onclick="handleNav()">Listing</a>
+            </li>
+            <li class="py-4 mt-10 text-xl ml-3 cursor-pointer uppercase">
+              <a href="" onclick="handleNav()">Agent</a>
+            </li>
+            <li class="py-4 mt-10 text-xl ml-3 cursor-pointer uppercase">
+              <a href="" onclick="handleNav()">Tenant</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const handleNav = () => {
+      const mobileMenu = document.querySelector(".md\\:hidden");
+      const body = document.body;
+      if (mobileMenu.classList.contains("hidden")) {
+        mobileMenu.classList.remove("hidden");
+        body.style.overflow = "hidden";
+      } else {
+        mobileMenu.classList.add("hidden");
+        body.style.overflow = "auto";
+      }
+    };
+
+    // Close mobile menu when clicking outside
+    document.addEventListener("click", (event) => {
+      const mobileMenu = document.querySelector(".md\\:hidden");
+      const menuIcon = document.querySelector(".fa-bars");
+      if (mobileMenu.classList.contains("hidden")) return;
+      if (
+        !mobileMenu.contains(event.target) &&
+        !menuIcon.contains(event.target)
+      ) {
+        handleNav();
+      }
+    });
+  </script>
+</div>

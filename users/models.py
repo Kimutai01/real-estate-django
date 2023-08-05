@@ -26,25 +26,29 @@ class Tenant(models.Model):
     def __str__(self):
         return self.first_name + " " + self.last_name
     
-class Property(models.Model):
+class Apartment(models.Model):
+   
     name = models.CharField(max_length=50)
     location = models.CharField(max_length=50)
     image = models.ImageField(default='default.jpg', blank=True, null=True, upload_to='apartments')
     price = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.TextField()
+    street_1 = models.CharField(max_length=50, null=True)
+    street_2 = models.CharField(max_length=50, null=True)
+    zip_code = models.CharField(max_length=50, null=True)
+    city = models.CharField(max_length=50, null=True)
+    county = models.CharField(max_length=50, null=True)
     agent = models.ForeignKey(Agent, on_delete=models.CASCADE)
     def __str__(self):
         return self.name
     
 class Room(models.Model):
     name = models.CharField(max_length=50)
-    apartment = models.ForeignKey(Property, on_delete=models.CASCADE)
+    apartment = models.ForeignKey(Apartment, on_delete=models.CASCADE)
     price = models.PositiveBigIntegerField(default=0)
-    tenant = models.ForeignKey(Tenant, on_delete=models.SET_NULL, null=True)
+    # image = models.ImageField(default='default.jpg', blank=True, null=True, upload_to='rooms')
+    is_occupied = models.BooleanField(default=False)
     
-    @property
-    def is_occupied(self) -> bool:
-        return self.tenant != None
     
     def __str__(self):
         return self.name
@@ -77,6 +81,8 @@ def create_occupation(sender, instance, created, **kwargs):
         room = instance.room
         room.is_occupied = True
         room.save()
+        
+    
         
 models.signals.post_save.connect(create_occupation, sender=Occupation)
 

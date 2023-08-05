@@ -1,9 +1,7 @@
-{% extends 'main.html' %}
-{% block content %}
-  <h1>Add Occupation</h1>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Add Occupation</button>
-  </form>
+{% extends 'main.html' %} {% block content %}
+<h1 class="pt-20">Add Occupation</h1>
+<form method="post">
+  {% csrf_token %} {{ form.as_p }}
+  <button type="submit">Add Occupation</button>
+</form>
 {% endblock %}

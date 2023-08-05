@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect, get_object_or_404
-from .models import User,Agent,Tenant,Property,Room,Booking
+from .models import User,Agent,Tenant,Apartment,Room,Booking
 from .forms import AgentSignUpForm,TenantSignUpForm,LoginForm,PropertyForm,RoomForm,AvailableTimeForm,BookingForm,OccupationForm,BillForm
 from django.contrib.auth import login,authenticate,logout
 from django.contrib.auth import views as auth_views
@@ -9,7 +9,7 @@ from django.urls import reverse
 from .decorators import tenant_required,agent_required
 from django.http import Http404
 from django.shortcuts import render
-from .models import Property, Booking, AvailableTime, Room, Occupation
+from .models import Apartment, Booking, AvailableTime, Room, Occupation
 from payments.models import Bill
 # import messages
 from django.contrib import messages
@@ -21,7 +21,7 @@ from datetime import timedelta
 
 # Create your views here.
 def landing_page(request):
-    apartments = Property.objects.all()
+    apartments = Apartment.objects.all()
     context = {
         'apartments':apartments
     }
@@ -70,7 +70,7 @@ def login_view(request):
 @login_required
 @tenant_required
 def tenant_home(request):
-    properties = Property.objects.all()
+    properties = Apartment.objects.all()
     bookings = Booking.objects.filter(tenant=request.user.tenant)
     occupation = Occupation.objects.filter(tenant=request.user.tenant)
     bills = Bill.objects.filter(tenant=request.user.tenant)
@@ -89,23 +89,24 @@ def tenant_home(request):
 @login_required
 @agent_required
 def agent_home(request):
-    apartments = Property.objects.filter(agent=request.user.agent)
-    
-    # bookings = Booking.objects.filter(room__property__agent=request.user.agent)
-    # print(bookings)
+    apartments = Apartment.objects.filter(agent=request.user.agent)
+    # all bookings for the agent
+    bookings = Booking.objects.filter(available_time__room__apartment__agent=request.user.agent)
+    print(bookings)
     print(apartments)
     context = {
         'apartments': apartments,
+        'bookings': bookings,
         
     }
     return render(request, 'users/agent_home.html', context)
 
 def property_details(request, id): 
-    apartment = Property.objects.get(id=id)
+    apartment = Apartment.objects.get(id=id)
     rooms = Room.objects.filter(apartment=apartment)
     print(f"Agent Rooms: {rooms}")
     if request.user.is_tenant:
-        rooms = rooms.filter(tenant=None)
+        rooms = rooms.filter(is_occupied=False)
 
     context = {
         'apartment': apartment,
@@ -159,7 +160,7 @@ def search_results(request):
     property_type = request.GET.get('property_type')
 
     # Filter properties based on search_query and property_type
-    properties = Property.objects.filter(
+    properties = Apartment.objects.filter(
         name__icontains=search_query,
         property_type=property_type
     )
@@ -251,7 +252,7 @@ def add_available_time(request, id):
             available_time.agent = user.agent
             available_time.room = room
             form.save()
-            return redirect('agent_home')
+            return redirect('room_details', id=id)
     else:
         form = AvailableTimeForm()
         
@@ -373,7 +374,7 @@ def add_bill(request, room_id):
 @login_required
 @agent_required
 def add_room(request, pk):
-    apartment = Property.objects.get(pk=pk)
+    apartment = Apartment.objects.get(pk=pk)
     print(apartment)
     if request.method == 'POST':
         form = RoomForm(request.POST)
@@ -409,4 +410,11 @@ def delete_room(request, pk):
         room.delete()
         return redirect('property_details', id=room.apartment.id)
     return render(request, 'users/delete_room.html', {'room': room})
+
+def listings(request):
+    apartments = Apartment.objects.all()
+    context = {
+        'apartments': apartments,
+    }
+    return render(request, 'users/listings.html', context)
 

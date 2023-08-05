@@ -1,40 +1,58 @@
-<!-- login.html -->
 {% extends 'main.html' %} {% block content %}
-<div class="container mx-auto mt-8">
-  <h1 class="text-3xl font-bold mb-8 text-center">Login</h1>
-  <form action="{% url 'login' %}" method="post" class="max-w-md mx-auto">
-    {% csrf_token %}
-    <div class="mb-4">
-      <label
-        for="{{ form.username.id_for_label }}"
-        class="block text-sm font-medium text-gray-700"
-        >Username:</label
-      >
-      {{ form.username }}
+<div class="hero-bg">
+  <div class="mx-auto mt-8">
+    <h1 class="text-3xl font-bold mb-8 text-center text-white">Login</h1>
+    <div class="w-full px-12 py-16 bg-[#161616] rounded-lg shadow-md">
+      <form action="{% url 'login' %}" method="post" class="max-w-md mx-auto">
+        {% csrf_token %}
+        <div class="mb-4">
+          <label
+            for="{{ form.username.id_for_label }}"
+            class="block text-sm font-medium text-white uppercase"
+          >
+            Username:
+          </label>
+          <input
+            type="text"
+            name="username"
+            id="{{ form.username.id_for_label }}"
+            class="form-input w-full mt-1 rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0"
+          />
+        </div>
+        <div class="mb-4">
+          <label
+            for="{{ form.password.id_for_label }}"
+            class="block text-sm font-medium text-white"
+          >
+            Password:
+          </label>
+          <input
+            type="password"
+            name="password"
+            id="{{ form.password.id_for_label }}"
+            class="form-input w-full mt-1 rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0"
+          />
+        </div>
+        <input
+          type="submit"
+          value="Login"
+          class="why-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 mt-4 w-full rounded-md"
+        />
+      </form>
+      <p class="text-center mt-4 text-white">
+        Not yet registered! -
+        <a href="{% url 'agent_signup' %}" class="text-blue-500 hover:underline"
+          >Signup as Agent</a
+        >
+        or
+        <a
+          href="{% url 'tenant_signup' %}"
+          class="text-blue-500 hover:underline"
+          >Signup as Tenant</a
+        >
+        <br />
+      </p>
     </div>
-    <div class="mb-4">
-      <label
-        for="{{ form.password.id_for_label }}"
-        class="block text-sm font-medium text-gray-700"
-        >Password:</label
-      >
-      {{ form.password }}
-    </div>
-    <input
-      type="submit"
-      value="Login"
-      class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 mt-4 w-full rounded-md"
-    />
-  </form>
-  <p class="text-center mt-4">
-    Not yet registered! -
-    <a href="{% url 'agent_signup' %}" class="text-blue-500 hover:underline"
-      >Signup as Agent</a
-    >
-    or
-    <a href="{% url 'tenant_signup' %}" class="text-blue-500 hover:underline"
-      >Signup as Tenant</a
-    ><br />
-  </p>
+  </div>
 </div>
 {% endblock %}

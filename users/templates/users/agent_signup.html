@@ -1,80 +1,101 @@
 <!-- agent_signup.html -->
 {% extends 'main.html' %} {% block content %}
-<div class="container mx-auto mt-8">
-  <h1 class="text-3xl font-bold mb-8 text-center">Agent Signup</h1>
-  <form
-    action="{% url 'agent_signup' %}"
-    method="POST"
-    class="max-w-md mx-auto"
-  >
-    {% csrf_token %}
-    <div class="mb-4">
-      <label
-        for="{{ form.first_name.id_for_label }}"
-        class="block text-sm font-medium text-gray-700"
-        >First Name:</label
-      >
-      {{ form.first_name }}
-    </div>
-    <div class="mb-4">
-      <label
-        for="{{ form.last_name.id_for_label }}"
-        class="block text-sm font-medium text-gray-700"
-        >Last Name:</label
-      >
-      {{ form.last_name }}
-    </div>
-    <div class="mb-4">
-      <label
-        for="{{ form.id_number.id_for_label }}"
-        class="block text-sm font-medium text-gray-700"
-        >ID Number:</label
-      >
-      {{ form.id_number }}
-    </div>
-    <div class="mb-4">
-      <label
-        for="{{ form.email.id_for_label }}"
-        class="block text-sm font-medium text-gray-700"
-        >Email:</label
-      >
-      {{ form.email }}
-    </div>
-    <div class="mb-4">
-      <label
-        for="{{ form.username.id_for_label }}"
-        class="block text-sm font-medium text-gray-700"
-        >Username:</label
-      >
-      {{ form.username }}
-    </div>
-    <div class="mb-4">
-      <label
-        for="{{ form.password1.id_for_label }}"
-        class="block text-sm font-medium text-gray-700"
-        >Password:</label
-      >
-      {{ form.password1 }}
-    </div>
-    <div class="mb-4">
-      <label
-        for="{{ form.password2.id_for_label }}"
-        class="block text-sm font-medium text-gray-700"
-        >Confirm Password:</label
-      >
-      {{ form.password2 }}
-    </div>
-    <input
-      type="submit"
-      value="Signup"
-      class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 mt-4 w-full rounded-md"
-    />
-  </form>
-  <p class="text-center mt-4">
-    Already registered! -
-    <a href="{% url 'login' %}" class="text-blue-500 hover:underline"
-      >Login Now</a
-    ><br />
-  </p>
+<div class="flex justify-center bg-[#161616] pt-20 items-center">
+  <div class="max-w-md w-full px-6 py-4 bg-[#161616] rounded-lg shadow-md">
+    <h1
+      class="text-2xl font-bold mb-4 text-white text-center uppercase font-bold"
+      style="font-family: 'Gilda Display', serif"
+    >
+      Agent Signup
+    </h1>
+
+    <form
+      action="{% url 'agent_signup' %}"
+      method="POST"
+      class="max-w-md mx-auto"
+    >
+      {% csrf_token %}
+      <div class="mb-4">
+        <label
+          for="{{ form.first_name.id_for_label }}"
+          class="block text-sm font-medium text-white uppercase"
+          >First Name:</label
+        >
+        {{ form.first_name }}
+      </div>
+      <div class="mb-4">
+        <label
+          for="{{ form.last_name.id_for_label }}"
+          class="block text-sm font-medium text-white uppercase"
+          >Last Name:</label
+        >
+        {{ form.last_name }}
+      </div>
+      <div class="mb-4">
+        <label
+          for="{{ form.id_number.id_for_label }}"
+          class="block text-sm font-medium text-white uppercase"
+          >ID Number:</label
+        >
+        {{ form.id_number }}
+      </div>
+      <div class="mb-4">
+        <label
+          for="{{ form.email.id_for_label }}"
+          class="block text-sm font-medium text-gray-700"
+          >Email:</label
+        >
+        {{ form.email }}
+      </div>
+      <div class="mb-4">
+        <label
+          for="{{ form.username.id_for_label }}"
+          class="block text-sm font-medium text-white uppercase"
+          >Username:</label
+        >
+        {{ form.username }}
+      </div>
+      <div class="mb-4">
+        <label
+          for="{{ form.password1.id_for_label }}"
+          class="block text-sm font-medium text-gray-700"
+          >Password:</label
+        >
+        <input
+          type="password"
+          name="password1"
+          id="id_password1"
+          autocomplete="new-password"
+          class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+        />
+      </div>
+      <div class="mb-4">
+        <label
+          for="{{ form.password2.id_for_label }}"
+          class="block text-sm font-medium text-gray-700"
+          >Confirm Password:</label
+        >
+        <input
+          type="password"
+          name="password2"
+          id="id_password2"
+          autocomplete="new-password"
+          class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+        />
+      </div>
+      <input
+        type="submit"
+        value="Signup"
+        class="w-full px-4 py-2 bg-[#e3af5a] text-white hover:text-[#000] rounded-md hover:bg-[#fff]"
+      />
+    </form>
+    <p class="text-center mt-4">
+      Already registered! -
+      <a href="{% url 'login' %}" class="text-[#e3af5a] hover:underline"
+        >Login Now</a
+      ><br />
+    </p>
+  </div>
 </div>
-{% endblock %}
+  {% endblock %}
+</div>

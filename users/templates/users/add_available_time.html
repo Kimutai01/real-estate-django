@@ -1,5 +1,5 @@
 {% extends 'main.html' %} {% block content %}
-<h1>Add Available Time</h1>
+<h1 class="pt-40">Add Available Time</h1>
 <form method="post">
   {% csrf_token %} {{ form.as_p }}
   <button type="submit">Submit</button>
