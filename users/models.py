@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from datetime import datetime
 
 # Create your models here.
 class User(AbstractUser):
@@ -69,6 +70,11 @@ class Booking(models.Model):
 
     def __str__(self):
         return f"{self.available_time.agent.first_name} {self.available_time.agent.last_name} {self.available_time.room.name} {self.tenant.first_name} {self.tenant.last_name}"
+    
+
+
+
+
     
 
 class Occupation(models.Model):
