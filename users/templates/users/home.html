@@ -213,6 +213,7 @@
 
   <div class="mx-auto w-[80%] pt-10 flex flex-col md:flex-row gap-10">
     <!--Display latest 3 apartments-->
+    {% if apartments %}
     {% for apartment in apartments.all|slice:":3" %}
      <div>
         <img
@@ -234,6 +235,7 @@
         </div>
       </div>
     {% endfor %}
+    {% endif %}
   </div>
 </div>
 
