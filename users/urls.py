@@ -29,6 +29,8 @@ urlpatterns = [
     path('add_room/<pk>/', views.add_room, name='add_room'),
     path('update_room/<pk>/', views.update_room, name='update_room'),
     path('delete_room/<pk>/', views.delete_room, name='delete_room'),
+    path('update_property/<pk>/', views.update_apartment, name='update_property'),
+    path('delete_property/<pk>/', views.delete_apartment, name='delete_property'),
     
     
     

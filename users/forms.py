@@ -155,7 +155,15 @@ class RoomForm(forms.ModelForm):
     class Meta:
         model = Room
         exclude = ('apartment',)
-        fields=('name', 'price',)
+        fields=('name', 'price', 'description', 'image')
+        
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'w-full px-3 py-2 rounded border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring focus:border-blue-500'}),
+            'price': forms.NumberInput(attrs={'class': 'w-full px-3 py-2 rounded border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring focus:border-blue-500'}),
+            'description': forms.Textarea(attrs={'class': 'w-full px-3 py-2 rounded border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring focus:border-blue-500'}),
+            'image': forms.FileInput(attrs={'class': 'w-full'}),
+            'apartment': forms.Select(attrs={'class': 'w-full px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring focus:border-blue-500'}),
+        }
         
 
 class AvailableTimeForm(forms.ModelForm):
@@ -233,9 +241,6 @@ class BillForm(forms.ModelForm):
     
     class Meta:
         model = Bill
-        exclude = ['room']
-        # fields = [ 'name', 'amount', 'due_date']
-        
-        widgets = {
-            'tenant':forms.HiddenInput(),
-        }
+        exclude = ['room', 'tenant']
+        fields = [  'extra_amount', 'due_date']
+      

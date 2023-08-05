@@ -1,36 +1,134 @@
 {% extends 'main.html' %} {% block content %}
-<h1 class="pt-40">{{ room.name }}</h1>
+<div
+  class="h-[70vh] w-full bg-cover bg-center bg-no-repeat"
+  style="background-image:linear-gradient(
+      rgba(255, 255, 255, 0) 60%,
+      #151623 90%,
+      #151623
+    ),
+    linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url({{ room.image.url }})"
+></div>
+<div class="bg-[#151623] pb-20">
+  <div class="px-5 md:px-20">
+    <div>
+      <button
+        class="font-barlow uppercase ml-28 md:ml-0 text-[#e3af5a] text-center md:text-start px-4 py-2 mt-10 w-40 bg-[#3e342f] leading-9"
+      >
+        {{ room.apartment.agent }}
+      </button>
+      {% if user.is_authenticated and user == room.apartment.agent.user %}
+      <button
+        class="font-barlow uppercase ml-28 md:ml-0 text-[#e3af5a] text-center md:text-start px-4 py-2 mt-10 w-60 bg-[#3e342f] leading-9"
+      >
+        <a href="{% url 'add_available_time' room.id %}">Add Available Time</a>
+      </button>
+      {% if not occupation %}
+      <button
+        class="font-barlow uppercase ml-28 md:ml-0 text-[#e3af5a] text-center md:text-start px-4 py-2 mt-10 w-60 bg-[#3e342f] leading-9"
+      >
+        <a href="{% url 'add_occupation' room.id %}">Add an occupant</a>
+      </button>
+      {% endif %} {% endif %} {% if occupation %} {% if room.apartment.agent.user == user %}
+      <button
+        class="font-barlow uppercase ml-28 md:ml-0 text-[#e3af5a] text-center md:text-start px-4 py-2 mt-10 w-40 bg-[#3e342f] leading-9"
+      >
+        <a href="{% url 'add_bill' room.id %}">Add Bill</a>
+      </button>
+      {% endif %} {% endif %} {% if is_authenticated_tenant and not occupation %}
 
-{% if user.agent %}
-<button
-  type="button"
-  class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700"
->
-  <a href="{% url 'add_available_time' room.id %}">Add Available Time</a>
-</button>
-{% if not room.is_occupied %}
-<button
-  type="button"
-  class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700"
->
-  <a href="{% url 'add_occupation' room.id %}">Add Occupation</a>
-</button>
-{% endif %} {% endif %} {% if occupation %} {% if user.agent %}
+      <form method="post">
+        {% csrf_token %} {{ form }}
+        <button type="submit">Book</button>
+      </form>
 
-<!-- Button to add bill -->
-<button
-  type="button"
-  class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700"
->
-  <a href="{% url 'add_bill' room.id %}">Add Bill</a>
-</button>
-{% endif %}
+      {% endif %}
+    </div>
+    <h1
+      class="text-[#fff] text-center md:text-start font-gilda text-4xl md:text-6xl mt-5"
+    >
+      {{ room.name }}
+    </h1>
+    <h2
+      class="text-[#e3af5a] text-center md:text-start font-barlow text-2xl md:text-4xl mt-5"
+    >
+      {{ room.apartment.name }}
+    </h2>
+    <h3
+      class="text-[#fff] text-center md:text-start font-barlow text-xl md:text-2xl mt-5"
+    >
+      Bills
+    </h3>
+    <ul class="text-[#fff]">
+      {% for bill in bills %}
+      <li>
+        {{ bill.tenant.first_name }} - {{ bill.amount }} (Due Date:
+        {{bill.due_date}})
+      </li>
+      {% endfor %}
+    </ul>
+    <p
+      class="text-[#fff] font-barlow text-lg mt-5 text-center md:text-start md:w-[60%]"
+    >
+      {{room.description}}
+    </p>
+    <div class="flex gap-10">
+      <div class="bg-[#3e342f] mt-10 p-10 w-[30%]">
+        <h1 class="text-[#e3af5a]">Times the agent is available for booking</h1>
+        <ul class="text-[#fff] list-decimal ml-10 mt-5">
+          {% for available_time in available_times %}
+          <li>{{ available_time.date }} - {{ available_time.time }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="bg-[#3e342f] mt-10 w-[30%] p-10 text-[#fff]">
+        {% if user.is_authenticated and user == room.apartment.agent.user %} {% for occ in occupation %}
+        <ul>
+          <li>
+            {{ occ.tenant.first_name }} {{ occ.tenant.last_name }} -
+            {{occ.start_date}}
+          </li>
+          {% if user.agent %}
+
+          <form method="post" action="{% url 'remove_occupation' occ.id %}">
+            {% csrf_token %}
+            <button type="submit" class="text-[#fff] p-3 bg-[#e3af5a]">Remove</button>
+          </form>
+          {% endif %} {% endfor %} {% endif %}
+        </ul>
+      </div>
+      <div class="bg-[#3e342f] mt-10 p-10 w-[30%]">
+        {% if is_authenticated_tenant %} {% if not has_booking %}
+        <h2>Book this Room</h2>
+        <form method="post">
+          {% csrf_token %} {{ form }}
+          <button type="submit">Book</button>
+        </form>
+        {% else %}
+        <h2>Your Booking</h2>
+
+        <p>
+          {{ booking.available_time.date }} - {{ booking.available_time.time }}
+        </p>
+        <form method="post" action="{% url 'cancel_booking' booking.id %}">
+          {% csrf_token %}
+          <button type="submit">Cancel Booking</button>
+        </form>
+        {% endif %} {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% comment %}
+<h1 class="">{{ room.name }}</h1>
+{% if occupation %}
 
 <h2>Bills</h2>
 <ul>
   {% for bill in bills %}
   <li>
-    {{ bill.tenant.first_name }} - {{ bill.amount }} (Due Date: {{ bill.due_date
+    {{ bill.tenant.first_name }} - {{ bill.amount }} (Due Date: {{bill.due_date
     }})
   </li>
   {% endfor %}
@@ -58,20 +156,6 @@
   {% endfor %}
 </ul>
 
-{% if is_authenticated_tenant %} {% if not has_booking %}
-<h2>Book this Room</h2>
-<form method="post">
-  {% csrf_token %} {{ form }}
-  <button type="submit">Book</button>
-</form>
 {% else %}
-<h2>Your Booking</h2>
-
-<p>{{ booking.available_time.date }} - {{ booking.available_time.time }}</p>
-<form method="post" action="{% url 'cancel_booking' booking.id %}">
-  {% csrf_token %}
-  <button type="submit">Cancel Booking</button>
-</form>
-{% endif %} {% endif %} {% else %}
 <p>No available times for this room.</p>
-{% endif %} {% endblock %}
+{% endif %} {% endblock %} {% endcomment %} {% endblock %}

@@ -46,7 +46,9 @@ class Room(models.Model):
     name = models.CharField(max_length=50)
     apartment = models.ForeignKey(Apartment, on_delete=models.CASCADE)
     price = models.PositiveBigIntegerField(default=0)
-    # image = models.ImageField(default='default.jpg', blank=True, null=True, upload_to='rooms')
+    image = models.ImageField(default='default.jpg', blank=True, null=True, upload_to='rooms',)
+    description = models.TextField(blank=True, null=True)
+    
     is_occupied = models.BooleanField(default=False)
     
     

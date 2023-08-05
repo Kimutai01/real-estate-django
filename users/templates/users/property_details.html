@@ -1,4 +1,116 @@
-{% extends 'main.html' %} {% block content %}
+{% extends 'main.html' %} {% load static %} {% block content %}
+<div
+  class="h-[70vh] w-full bg-cover bg-center bg-no-repeat"
+  style="background-image:linear-gradient(
+      rgba(255, 255, 255, 0) 60%,
+      #151623 90%,
+      #151623
+    ),
+    linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url({{ apartment.image.url }})"
+></div>
+
+<div class="bg-[#151623] pb-20">
+  <div class="px-5 md:px-20">
+    <>
+    <button
+      class="font-barlow uppercase ml-28 md:ml-0 text-[#e3af5a] text-center md:text-start px-4 py-2 mt-10 w-40 bg-[#3e342f] leading-9"
+    >
+      {{ apartment.location }}
+    </button>
+    {% if user.is_authenticated and user == apartment.agent.user %}
+    <button
+      class="font-barlow uppercase ml-28 md:ml-0 text-[#e3af5a] text-center md:text-start px-4 py-2 mt-10 w-40 bg-[#3e342f] leading-9"
+    >
+      <a href="{% url 'update_property' apartment.id %}">Update</a>
+    </button>
+    <button
+      class="font-barlow uppercase ml-28 md:ml-0 text-[#e3af5a] text-center md:text-start px-4 py-2 mt-10 w-40 bg-[#3e342f] leading-9"
+    >
+      <a href="{% url 'delete_property' apartment.id %}">Delete</a>
+    </button>
+    <button
+      class="font-barlow uppercase ml-28 md:ml-0 text-[#e3af5a] text-center md:text-start px-4 py-2 mt-10 w-40 bg-[#3e342f] leading-9"
+    >
+      <a href="{% url 'add_room' apartment.id %}">Add Room</a>
+    </button>
+    {% endif %}
+  </div>
+    <h1
+      class="text-[#fff] text-center md:text-start font-gilda text-4xl md:text-6xl mt-5"
+    >
+      {{ apartment.name }}
+    </h1>
+    <p
+      class="text-[#fff] font-barlow text-lg mt-5 text-center md:text-start md:w-[60%]"
+    >
+      {{apartment.description}}
+    </p>
+  </div>
+  <div class="flex flex-col gap-10 md:flex-row mx-auto w-[90%] mt-10">
+    <div
+      class="bg-[#222222] flex flex-row md:flex-col md:sticky w-[25%] top-16 md:h-screen p-10"
+    >
+      <div>
+        <h1 class="text-[#fff] text-2xl font-gilda font-medium mt-5">
+          Type of Property
+        </h1>
+        <ul>
+          <li class="text-[#fff] font-barlow text-lg mt-5">Studio</li>
+          <li class="text-[#fff] font-barlow text-lg mt-5">1 Bedroom</li>
+          <li class="text-[#fff] font-barlow text-lg mt-5">2 Bedroom</li>
+          <li class="text-[#fff] font-barlow text-lg mt-5">3 Bedroom</li>
+          <li class="text-[#fff] font-barlow text-lg mt-5">4 Bedroom</li>
+
+          <li class="text-[#fff] font-barlow text-lg mt-5">5 Bedroom</li>
+        </ul>
+      </div>
+      <div>
+        <h1 class="text-[#fff] text-2xl font-gilda font-medium mt-5">
+          Type of Property
+        </h1>
+
+        <ul>
+          <li class="text-[#fff] font-barlow text-lg mt-5">Apartments</li>
+          <li class="text-[#fff] font-barlow text-lg mt-5">Houses</li>
+          <li class="text-[#fff] font-barlow text-lg mt-5">Offices</li>
+          <li class="text-[#fff] font-barlow text-lg mt-5">Shops</li>
+          <li class="text-[#fff] font-barlow text-lg mt-5">Land</li>
+        </ul>
+      </div>
+    </div>
+    <div
+      class="mx-auto md:w-[80%] w-[95%] pt-10 gap-10 grid md:grid-cols-3 grid-cols-1"
+    >
+      {% for room in rooms %}
+      <div>
+        <img
+          src="{{ room.image.url }}"
+          alt="{{room.name}}"
+          class="h-[250px] w-full"
+        />
+        <div class="bg-[#3e342f] p-5">
+          <h1 class="text-[#e3af5a]">{{ room.name }}</h1>
+          <p class="text-[#fff]">{{ room.description }}</p>
+          <p class="text-[#fff]">{{ room.location }}</p>
+          <div>
+            <button class="bg-[#e3af5a] px-4 py-2 mt-5">
+              <a href="{% url 'room_details' room.id %}">View </a>
+            </button>
+            {% if user.is_authenticated and user == apartment.agent.user %}
+            <button class="bg-[#e3af5a] px-4 py-2 mt-5">
+              <a href="{% url 'update_room' room.id %}">Update</a>
+            </button>
+            <button class="bg-[#e3af5a] px-4 py-2 mt-5">
+              <a href="{% url 'delete_room' room.id %}">Delete</a>
+            </button>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
 <div class="container mx-auto p-8">
   <h1 class="text-3xl font-bold mb-8">Property Details</h1>
   <div class="bg-white rounded-md shadow p-6 mb-8">
@@ -62,4 +174,5 @@
     {% endfor %}
   </div>
 </div>
+
 {% endblock %}

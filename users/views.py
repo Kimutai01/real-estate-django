@@ -72,17 +72,18 @@ def login_view(request):
 def tenant_home(request):
     properties = Apartment.objects.all()
     bookings = Booking.objects.filter(tenant=request.user.tenant)
-    occupation = Occupation.objects.filter(tenant=request.user.tenant)
+    occupations = Occupation.objects.filter(tenant=request.user.tenant)
+    occupation = Occupation.objects.filter(tenant=request.user.tenant).first()
     bills = Bill.objects.filter(tenant=request.user.tenant)
 
     
     print(bookings)
-    print(occupation)
     
     context = {
         'properties':properties,
         'bookings':bookings,
         'bills':bills,
+        'occupation':occupation,
     }
     return render(request,'users/tenant_home.html',context)
 
@@ -90,6 +91,16 @@ def tenant_home(request):
 @agent_required
 def agent_home(request):
     apartments = Apartment.objects.filter(agent=request.user.agent)
+    occupants = Occupation.objects.filter(room__apartment__agent=request.user.agent)
+    bills = Bill.objects.filter(room__apartment__agent=request.user.agent)
+    print(bills)
+    # sum of all bill amounts
+    total = 0
+    for bill in bills:
+        total += bill.amount
+    print(total)
+
+    print(occupants)
     # all bookings for the agent
     bookings = Booking.objects.filter(available_time__room__apartment__agent=request.user.agent)
     print(bookings)
@@ -97,6 +108,9 @@ def agent_home(request):
     context = {
         'apartments': apartments,
         'bookings': bookings,
+        'occupants': occupants,
+        'bills': bills,
+        'total': total,
         
     }
     return render(request, 'users/agent_home.html', context)
@@ -377,7 +391,7 @@ def add_room(request, pk):
     apartment = Apartment.objects.get(pk=pk)
     print(apartment)
     if request.method == 'POST':
-        form = RoomForm(request.POST)
+        form = RoomForm(request.POST, request.FILES)
         if form.is_valid():
             room = form.save(commit=False)
             room.apartment = apartment
@@ -393,7 +407,7 @@ def add_room(request, pk):
 def update_room(request, pk):
     room = Room.objects.get(pk=pk)
     if request.method == 'POST':
-        form = RoomForm(request.POST, instance=room)
+        form = RoomForm(request.POST, instance=room, files=request.FILES)
         if form.is_valid():
             form.save()
             return redirect('property_details', id=room.apartment.id)
@@ -417,4 +431,36 @@ def listings(request):
         'apartments': apartments,
     }
     return render(request, 'users/listings.html', context)
+
+@login_required
+@agent_required
+def update_apartment(request, pk):
+    apartment = Apartment.objects.get(pk=pk)
+    if request.method == 'POST':
+        form = PropertyForm(request.POST, instance=apartment)
+        if form.is_valid():
+            form.save()
+            return redirect('property_details', id=pk)
+    else:
+        form = PropertyForm(instance=apartment)
+        
+    return render(request, 'users/create_property.html', {'form': form})
+
+@login_required
+@agent_required
+def delete_apartment(request, pk):
+    apartment = Apartment.objects.get(pk=pk)
+    if request.method == 'POST':
+        apartment.delete()
+        return redirect('listings')
+    return render(request, 'users/delete_apartment.html', {'apartment': apartment})
+
+@login_required
+@agent_required
+def deleteBill(request, pk):
+    bill = Bill.objects.get(pk=pk)
+    if request.method == 'POST':
+        bill.delete()
+        return redirect('room_details', id=bill.room.id)
+    return render(request, 'users/delete_bill.html', {'bill': bill})
 

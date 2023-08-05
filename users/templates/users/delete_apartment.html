@@ -1,0 +1,18 @@
+{% extends 'main.html' %} {% block content %}
+
+<div class="pt-20">
+  <h1>Delete Apartment</h1>
+  <p>Are you sure you want to delete the following apartment?</p>
+  <p>Apartment ID: {{ apartment.pk }}</p>
+  <p>Apartment Name: {{ apartment.name }}</p>
+  <p>Apartment Location: {{ apartment.location }}</p>
+
+  <form action="{% url 'delete_property' apartment.pk %}" method="post">
+    {% csrf_token %}
+    <input type="submit" value="Delete" />
+  </form>
+
+  <a href="{% url 'agent_home' %}">Cancel</a>
+</div>
+
+{% endblock %}
