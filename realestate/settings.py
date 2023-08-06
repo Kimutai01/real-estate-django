@@ -102,6 +102,7 @@ DATABASES = {
         'NAME': 'realestate',
         'USER' : 'kimutai',
         'PASSWORD' : 'kimutai',
+        'HOST' : 'localhost',
         'PORT' : '5432',
     }
 }
