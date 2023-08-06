@@ -16,6 +16,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 import django_heroku
 import dj_database_url
+import os
 
 
 
@@ -97,14 +98,7 @@ WSGI_APPLICATION = 'realestate.wsgi.application'
 # }
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'test',
-        'USER' : 'kimutai',
-        'PASSWORD' : 'kimutai',
-        'HOST' : 'localhost',
-        'PORT' : '5432',
-    }
+    'default': {dj_database_url.config(default=os.environ.get('DATABASE_URL'))}
 }
 
 
