@@ -9,6 +9,7 @@ services:
       - db
     volumes:
       - .:/app
+    restart: always
   db:
     image: postgres:14
     environment:
@@ -19,3 +20,4 @@ services:
       - "5432:5432"
     volumes:
       - ./postgres_data:/var/lib/postgresql/data/
+    restart: always
