@@ -166,5 +166,5 @@ LOGOUT_REDIRECT_URL = 'landing_page'
 django_heroku.settings(locals())
 
 CSRF_TRUSTED_ORIGINS = [
-    'http://46.101.195.147/',
+    'http://46.101.195.147',
 ]
