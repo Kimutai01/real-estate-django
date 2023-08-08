@@ -52,13 +52,12 @@
     <div
       class="mx-auto md:w-[80%] w-[95%] pt-10 gap-10 grid md:grid-cols-3 grid-cols-1"
     >
-    {% if apartments %}
-      {% for apartment in apartments %}
+      {% if apartments %} {% for apartment in apartments %}
       <div>
         <img
           src="{{ apartment.image.url }}"
           alt="{{apartment.name}}"
-          class="h-[250px]"
+          class="h-[250px] w-full"
         />
         <div class="bg-[#3e342f] p-5">
           <h1 class="text-[#e3af5a]">{{ apartment.name }}</h1>
@@ -73,10 +72,9 @@
           </button>
         </div>
       </div>
-      {% endfor %}
-        {% else %}
-        <p>No apartments available</p>
-        {% endif %}
+      {% endfor %} {% else %}
+      <p>No apartments available</p>
+      {% endif %}
     </div>
   </div>
 </div>
