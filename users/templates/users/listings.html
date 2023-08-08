@@ -54,11 +54,13 @@
     >
       {% if apartments %} {% for apartment in apartments %}
       <div>
-        <img
-          src="{{ apartment.image.url }}"
-          alt="{{apartment.name}}"
-          class="h-[250px] w-full object-cover"
-        />
+        <div class="w-[100%]">
+          <img
+            src="{{ apartment.image.url }}"
+            alt="{{apartment.name}}"
+            class="h-[250px] w-full object-cover"
+          />
+        </div>
         <div class="bg-[#3e342f] p-5">
           <h1 class="text-[#e3af5a]">{{ apartment.name }}</h1>
           <p class="text-[#fff]">{{ apartment.description }}</p>
