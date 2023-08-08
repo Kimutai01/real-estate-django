@@ -54,8 +54,8 @@
         </li>
       </ul>
       <div
+        id="mobileMenuIcon"
         class="md:hidden flex justify-between items-center w-full h-full"
-        onclick="handleNav()"
         style="color: #ecf0f3"
       >
         <i class="fa fa-bars text-[#fff] text-3xl"></i>
@@ -86,51 +86,58 @@
   </div>
 
   <div
-    class="{% if nav %}md:hidden fixed left-0 top-0 w-full h-screen bg-black/70{% endif %}"
+    id="mobileMenu"
+    class="md:hidden fixed left-0 top-0 w-full h-screen bg-black/95 hidden"
   >
-    <div
-      class="{% if nav %}md:hidden fixed left-0 top-0 w-[100%] sm:w-[60%] md:w-[45%] h-screen bg-[#000]/60 text-white p-2 ease-in duration-500{% else %}fixed left-[-100%] top-0 p-10 ease-in duration-500{% endif %}"
-    >
-      <div>
-        <div class="flex justify-between items-center w-full mt-3 px-3">
-          <a class="text-[#eee] font-bold text-3xl font-allura" href=""
-            >Muru properties</a
-          >
-          <div
-            onclick="handleNav()"
-            class="cursor-pointer text-[#fff] text-3xl"
-          >
-            <i class="fa fa-times"></i>
-          </div>
+    <div>
+      <div class="flex justify-between items-center w-full mt-3 px-3">
+        <a
+          class="text-[#eee] font-bold text-3xl font-allura"
+          href="{% url 'landing_page' %}"
+          >Muru properties</a
+        >
+        <div id="close-icon" class="cursor-pointer text-[#fff] text-3xl">
+          <i class="fa fa-times"></i>
         </div>
       </div>
-      <div>
-        <div class="flex flex-col items-center font-barlow py-4">
-          <ul>
-            <li class="ml-3 mt-10 text-xl uppercase">
-              <a href="" onclick="handleNav()">Home</a>
-            </li>
-            <li class="ml-3 mt-10 text-xl uppercase">
-              <a href="" onclick="handleNav()">About</a>
-            </li>
-            <li class="py-4 mt-10 text-xl ml-3 cursor-pointer uppercase">
-              <a href="" onclick="handleNav()">Listing</a>
-            </li>
-            <li class="py-4 mt-10 text-xl ml-3 cursor-pointer uppercase">
-              <a href="" onclick="handleNav()">Agent</a>
-            </li>
-            <li class="py-4 mt-10 text-xl ml-3 cursor-pointer uppercase">
-              <a href="" onclick="handleNav()">Tenant</a>
-            </li>
-          </ul>
-        </div>
+    </div>
+    <div>
+      <div class="flex flex-col items-center text-[#fff] font-barlow py-4">
+        <ul>
+          <li class="ml-3 mt-10 text-xl uppercase">
+            <a href="{% url 'landing_page' %}">Home</a>
+          </li>
+          <li class="py-4 mt-10 text-xl ml-3 cursor-pointer uppercase">
+            <a href="{% url 'listings' %}">Listing</a>
+          </li>
+          <li class="ml-3 mt-10 text-xl uppercase">
+            <a
+              href="{% if user.is_authenticated and user.is_tenant %}{% url 'tenant_home' %}{% else %}{% url 'tenant_signup' %}{% endif %}"
+              >Tenant</a
+            >
+          </li>
+
+          <li class="py-4 mt-10 text-xl ml-3 cursor-pointer uppercase">
+            <a
+              href="{% if user.is_authenticated and user.is_agent %}{% url 'agent_home' %}{% else %}{% url 'agent_signup' %}{% endif %}"
+              >Agents</a
+            >
+          </li>
+          <li class="py-4 mt-10 text-xl ml-3 cursor-pointer uppercase">
+            {% if user.is_authenticated %}
+            <a href="{% url 'logout-page' %}">Logout</a>
+            {% else %}
+            <a href="{% url 'login' %}">Login</a>
+            {% endif %}
+          </li>
+        </ul>
       </div>
     </div>
   </div>
 
   <script>
-    const handleNav = () => {
-      const mobileMenu = document.querySelector(".md\\:hidden");
+    const handleMobileNav = () => {
+      const mobileMenu = document.getElementById("mobileMenu");
       const body = document.body;
       if (mobileMenu.classList.contains("hidden")) {
         mobileMenu.classList.remove("hidden");
@@ -141,17 +148,9 @@
       }
     };
 
-    // Close mobile menu when clicking outside
-    document.addEventListener("click", (event) => {
-      const mobileMenu = document.querySelector(".md\\:hidden");
-      const menuIcon = document.querySelector(".fa-bars");
-      if (mobileMenu.classList.contains("hidden")) return;
-      if (
-        !mobileMenu.contains(event.target) &&
-        !menuIcon.contains(event.target)
-      ) {
-        handleNav();
-      }
-    });
+    const mobileMenuIcon = document.getElementById("mobileMenuIcon");
+    const closeIcon = document.getElementById("close-icon");
+    mobileMenuIcon.addEventListener("click", handleMobileNav);
+    closeIcon.addEventListener("click", handleMobileNav);
   </script>
 </div>
