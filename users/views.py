@@ -42,6 +42,7 @@ def agent_signup_view(request):
 def tenant_signup_view(request):
     if request.method == 'POST':
         form = TenantSignUpForm(request.POST)
+        print(form)
         if form.is_valid():
             user = form.save()
             login(request,user)

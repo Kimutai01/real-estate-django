@@ -55,7 +55,17 @@
         </label>
         {{ form.username }}
       </div>
-      
+
+      <div class="mb-4">
+        <label
+          for="{{ form.phone_number.id_for_label }}"
+          class="block text-sm font-medium text-white uppercase"
+        >
+          Phone Number:
+        </label>
+        {{ form.phone_number }}
+      </div>
+
       <div class="mb-4">
         <label
           for="{{ form.password1.id_for_label }}"

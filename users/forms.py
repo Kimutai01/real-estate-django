@@ -103,6 +103,13 @@ class TenantSignUpForm(UserCreationForm):
         }),
         label='Email'
     )
+    phone_number = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-500',
+            'placeholder': 'Enter your phone number 254700000000',
+        }),
+        label='Phone Number'
+    )
 
     
 
@@ -122,7 +129,7 @@ class TenantSignUpForm(UserCreationForm):
         user.is_tenant = True
         if commit:
             user.save()
-        tenant = Tenant.objects.create(user=user,first_name=self.cleaned_data.get('first_name'),last_name=self.cleaned_data.get('last_name'),id_number=self.cleaned_data.get('id_number'))
+        tenant = Tenant.objects.create(user=user,first_name=self.cleaned_data.get('first_name'),last_name=self.cleaned_data.get('last_name'),id_number=self.cleaned_data.get('id_number'),phone_number=self.cleaned_data.get('phone_number'))
         return user
     
 class LoginForm(AuthenticationForm):
