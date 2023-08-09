@@ -15,4 +15,14 @@
   align-items: center;
 }
 
+.font-allura {
+  font-family: "Allura", cursive;
+}
 
+.font-barlow {
+  font-family: "Barlow", sans-serif;
+}
+
+.font-gilda {
+  font-family: "Gilda Display", serif;
+}
