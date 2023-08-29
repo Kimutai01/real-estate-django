@@ -86,6 +86,9 @@
             {% csrf_token %}
             <button type="submit" class="text-[#fff] p-3 bg-[#e3af5a]">Remove</button>
           </form>
+          <div class="ml-28 md:ml-0 mt-10">
+  <a href="{% url 'download_contract' room.id %}" class="text-[#e3af5a] underline">Download Contract</a>
+</div>
           {% endif %} {% endfor %} {% endif %}
         </ul>
       </div>

@@ -1,43 +1,77 @@
-from django.shortcuts import render,redirect, get_object_or_404
-from .models import User,Agent,Tenant,Apartment,Room,Booking
-from .forms import AgentSignUpForm,TenantSignUpForm,LoginForm,PropertyForm,RoomForm,AvailableTimeForm,BookingForm,OccupationForm,BillForm
-from django.contrib.auth import login,authenticate,logout
+from django.http import HttpResponseServerError
+from django.db import IntegrityError
+from django.shortcuts import get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import User, Agent, Tenant, Apartment, Room, Booking
+from .forms import AgentSignUpForm, TenantSignUpForm, LoginForm, PropertyForm, RoomForm, AvailableTimeForm, BookingForm, OccupationForm, BillForm
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.urls import reverse
-from .decorators import tenant_required,agent_required
+from .decorators import tenant_required, agent_required
 from django.http import Http404
 from django.shortcuts import render
-from .models import Apartment, Booking, AvailableTime, Room, Occupation
+from .models import Apartment, Booking, AvailableTime, Room, Occupation, Contract
 from payments.models import Bill
 # import messages
 from django.contrib import messages
-#timezone
+# timezone
 from django.utils import timezone
-#timedelta
+# timedelta
 from datetime import timedelta
 from django.views.generic import TemplateView
+
+from django.http import FileResponse
+from django.template.loader import get_template
+from django.urls import reverse
+from django.http import HttpResponse
+from xhtml2pdf import pisa
 
 
 # Create your views here.
 def landing_page(request):
     apartments = Apartment.objects.all()
     context = {
-        'apartments':apartments
+        'apartments': apartments
     }
-    return render(request,'users/home.html',context)
+    return render(request, 'users/home.html', context)
+
+
+def generate_contract_pdf(request, contract_id):
+    contract = get_object_or_404(Contract, pk=contract_id)
+
+    template = get_template('users/contract_template.html')
+    context = {
+        'contract': contract,
+        'agent_first_name': contract.agent_first_name,
+        'agent_last_name': contract.agent_last_name,
+        'tenant_first_name': contract.tenant_first_name,
+        'tenant_last_name': contract.tenant_last_name,
+    }
+    html = template.render(context)
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="contract_{contract_id}.pdf"'
+
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    if pisa_status.err:
+        return HttpResponse('PDF generation error')
+
+    return response
+
+
 def agent_signup_view(request):
     if request.method == 'POST':
         form = AgentSignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request,user)
-            return render(request,'users/agent_home.html')
+            login(request, user)
+            return render(request, 'users/agent_home.html')
     else:
-       
+
         form = AgentSignUpForm()
-    return render(request,'users/agent_signup.html',{'form':form})
+    return render(request, 'users/agent_signup.html', {'form': form})
+
 
 def tenant_signup_view(request):
     if request.method == 'POST':
@@ -45,12 +79,13 @@ def tenant_signup_view(request):
         print(form)
         if form.is_valid():
             user = form.save()
-            login(request,user)
-            return render(request,'users/tenant_home.html')
+            login(request, user)
+            return render(request, 'users/tenant_home.html')
     else:
-    
+
         form = TenantSignUpForm()
-    return render(request,'users/tenant_signup.html',{'form':form})
+    return render(request, 'users/tenant_signup.html', {'form': form})
+
 
 def login_view(request):
     if request.method == 'POST':
@@ -65,14 +100,10 @@ def login_view(request):
                 messages.success(request, f'Welcome {request.user.username}')
                 return redirect('tenant_home')
 
-            
     else:
         form = AuthenticationForm()
 
     return render(request, 'users/login.html', {'form': form})
-
-
- 
 
 
 @login_required
@@ -83,23 +114,27 @@ def tenant_home(request):
     occupations = Occupation.objects.filter(tenant=request.user.tenant)
     occupation = Occupation.objects.filter(tenant=request.user.tenant).first()
     bills = Bill.objects.filter(tenant=request.user.tenant)
+    contract = Contract.objects.filter(tenant=request.user.tenant).first()
 
-    
     print(bookings)
-    
+
     context = {
-        'properties':properties,
-        'bookings':bookings,
-        'bills':bills,
-        'occupation':occupation,
+        'properties': properties,
+        'bookings': bookings,
+        'bills': bills,
+        'occupation': occupation,
+
+        'contract': contract,
     }
-    return render(request,'users/tenant_home.html',context)
+    return render(request, 'users/tenant_home.html', context)
+
 
 @login_required
 @agent_required
 def agent_home(request):
     apartments = Apartment.objects.filter(agent=request.user.agent)
-    occupants = Occupation.objects.filter(room__apartment__agent=request.user.agent)
+    occupants = Occupation.objects.filter(
+        room__apartment__agent=request.user.agent)
     bills = Bill.objects.filter(room__apartment__agent=request.user.agent)
     print(bills)
     # sum of all bill amounts
@@ -110,7 +145,8 @@ def agent_home(request):
 
     print(occupants)
     # all bookings for the agent
-    bookings = Booking.objects.filter(available_time__room__apartment__agent=request.user.agent)
+    bookings = Booking.objects.filter(
+        available_time__room__apartment__agent=request.user.agent)
     print(bookings)
     print(apartments)
     context = {
@@ -119,11 +155,12 @@ def agent_home(request):
         'occupants': occupants,
         'bills': bills,
         'total': total,
-        
+
     }
     return render(request, 'users/agent_home.html', context)
 
-def property_details(request, id): 
+
+def property_details(request, id):
     apartment = Apartment.objects.get(id=id)
     rooms = Room.objects.filter(apartment=apartment)
     print(f"Agent Rooms: {rooms}")
@@ -137,6 +174,7 @@ def property_details(request, id):
     }
     return render(request, 'users/property_details.html', context)
 
+
 @login_required
 def logout_view(request):
     logout(request)
@@ -147,9 +185,7 @@ def logout_view(request):
 # @login_required
 # @agent_required
 # def create_property()
-from django.shortcuts import get_object_or_404
-from django.db import IntegrityError
-from django.http import HttpResponseServerError
+
 
 @login_required
 @agent_required
@@ -158,11 +194,10 @@ def create_property(request):
 
     if request.method == 'POST':
         form = PropertyForm(request.POST, request.FILES)
-        
+
         if form.is_valid():
             property_instance = form.save(commit=False)
-            
-        
+
             try:
                 agent = get_object_or_404(Agent, user=user)
                 property_instance.agent = agent
@@ -176,7 +211,6 @@ def create_property(request):
         form = PropertyForm()
 
     return render(request, 'users/create_property.html', {'form': form})
-
 
 
 def search_results(request):
@@ -200,22 +234,23 @@ def room_details(request, id):
     room = Room.objects.get(id=id)
     available_times = AvailableTime.objects.filter(room=room)
     booking = None
-    
-    
-    
 
     occupation = Occupation.objects.filter(room=room)
-    bills = Bill.objects.filter(room=room, tenant=occupation.first().tenant) if occupation else []
-    is_authenticated_tenant = request.user.is_authenticated and hasattr(request.user, 'tenant')
+    bills = Bill.objects.filter(
+        room=room, tenant=occupation.first().tenant) if occupation else []
+    is_authenticated_tenant = request.user.is_authenticated and hasattr(
+        request.user, 'tenant')
 
     if is_authenticated_tenant:
-        booking = Booking.objects.filter(tenant=request.user.tenant, available_time__room=room).first()
+        booking = Booking.objects.filter(
+            tenant=request.user.tenant, available_time__room=room).first()
 
-    has_booking = Booking.objects.filter(tenant=request.user.tenant, available_time__room=room).exists() if is_authenticated_tenant else False
+    has_booking = Booking.objects.filter(
+        tenant=request.user.tenant, available_time__room=room).exists() if is_authenticated_tenant else False
 
     # Initialize the BookingForm and pass the room_id to the form
     form = BookingForm(request.POST or None, room_id=id)
-    
+
     bill_form = BillForm(request.POST or None)
 
     # Add the OccupationForm to the view
@@ -265,9 +300,6 @@ def room_details(request, id):
     return render(request, 'users/room_details.html', context)
 
 
-
-
-
 def add_available_time(request, id):
     user = request.user
     room = Room.objects.get(id=id)
@@ -281,9 +313,9 @@ def add_available_time(request, id):
             messages.success(request, f'Available time created successfully')
             return redirect('room_details', id=id)
     else:
-        messages.error(request, f'Error creating available time')  
+        messages.error(request, f'Error creating available time')
         form = AvailableTimeForm()
-        
+
     return render(request, 'users/add_available_time.html', {'form': form})
 
 # def show_available_time(request, id):
@@ -293,6 +325,7 @@ def add_available_time(request, id):
 #         'available_times': available_times,
 #     }
 #     return render(request, 'users/show_available_time.html', context)
+
 
 def add_booking(request, room_id):
     if request.method == 'POST':
@@ -308,7 +341,8 @@ def add_booking(request, room_id):
             )
 
             if conflicting_bookings.exists():
-                messages.error(request, "This room is already booked for the selected time slot.")
+                messages.error(
+                    request, "This room is already booked for the selected time slot.")
             else:
                 form.save()
                 return redirect('room_details', id=room_id)
@@ -317,12 +351,10 @@ def add_booking(request, room_id):
 
     return render(request, 'users/add_booking.html', {'form': form})
 
+
 @login_required
 def cancel_booking(request, id):
     booking = get_object_or_404(Booking, pk=id)
-    
-    
-
 
     if request.method == 'POST':
         booking.delete()
@@ -330,6 +362,7 @@ def cancel_booking(request, id):
         return redirect('room_details', id=booking.available_time.room.id)
 
     return render(request, 'users/cancel_booking.html', {'booking': booking})
+
 
 @login_required
 def remove_occupation(request, id):
@@ -341,6 +374,8 @@ def remove_occupation(request, id):
         room.save()
         messages.success(request, f'Occupant removed successfully')
     return redirect('room_details', id=room.id)
+
+
 @login_required
 def make_payment(request):
     tenant = request.user.tenant
@@ -363,6 +398,7 @@ def make_payment(request):
     }
     return render(request, 'users/make_payment.html', context)
 
+
 @login_required
 @agent_required
 def add_occupation(request, room_id):
@@ -375,6 +411,16 @@ def add_occupation(request, room_id):
             occupation.save()
             room.is_occupied = True
             room.save()
+
+            contract = Contract.objects.create(
+                tenant=occupation.tenant,
+                room=room,
+                start_date=occupation.start_date,
+                agent_first_name=request.user.first_name,  # Set the agent's first name
+                agent_last_name=request.user.last_name,    # Set the agent's last name
+                tenant_first_name=occupation.tenant.first_name,  # Set the tenant's first name
+                tenant_last_name=occupation.tenant.last_name,    # Set the tenant's last name
+            )
             messages.success(request, f'Occupant added successfully')
             return redirect('room_details', id=room_id)
     else:
@@ -402,6 +448,7 @@ def add_bill(request, room_id):
 
     return render(request, 'users/add_bill.html', {'form': form})
 
+
 @login_required
 @agent_required
 def add_room(request, pk):
@@ -416,8 +463,9 @@ def add_room(request, pk):
             return redirect('property_details', id=pk)
     else:
         form = RoomForm()
-        
+
     return render(request, 'users/add_room.html', {'form': form})
+
 
 @login_required
 @agent_required
@@ -430,8 +478,9 @@ def update_room(request, pk):
             return redirect('property_details', id=room.apartment.id)
     else:
         form = RoomForm(instance=room)
-        
+
     return render(request, 'users/add_room.html', {'form': form})
+
 
 @login_required
 @agent_required
@@ -442,12 +491,14 @@ def delete_room(request, pk):
         return redirect('property_details', id=room.apartment.id)
     return render(request, 'users/delete_room.html', {'room': room})
 
+
 def listings(request):
     apartments = Apartment.objects.all()
     context = {
         'apartments': apartments,
     }
     return render(request, 'users/listings.html', context)
+
 
 @login_required
 @agent_required
@@ -460,8 +511,9 @@ def update_apartment(request, pk):
             return redirect('property_details', id=pk)
     else:
         form = PropertyForm(instance=apartment)
-        
+
     return render(request, 'users/create_property.html', {'form': form})
+
 
 @login_required
 @agent_required
@@ -472,6 +524,7 @@ def delete_apartment(request, pk):
         messages.success(request, f'Apartment deleted successfully')
         return redirect('listings')
     return render(request, 'users/delete_apartment.html', {'apartment': apartment})
+
 
 @login_required
 @agent_required
@@ -487,4 +540,3 @@ def deleteBill(request, pk):
 def logout_view(request):
     logout(request)
     return redirect('landing_page')
-

@@ -29,6 +29,8 @@
                 <div class="text-xl text-gray-800 leading-none">
                   Good day <span class="font-bold">{{user.tenant}}</span>
                 </div>
+                <a href="{% url 'generate_contract_pdf' contract.id %}" class='text-[#000]'>Download Contract</a>
+                
               </div>
             </div>
             <div class="p-4 bg-yellow-100 rounded-xl text-gray-800">
@@ -139,7 +141,8 @@
             </svg>
           </div>
           <h2 class="text-lg font-medium title-font mb-2 text-blue-600">
-            {{ booking.available_time.date }} at {{ booking.available_time.time }}
+            {{ booking.available_time.date }} at {{ booking.available_time.time
+            }}
           </h2>
           <p class="leading-relaxed text-base">
             <span class="font-bold"> Room name: </span>
