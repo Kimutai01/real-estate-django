@@ -11,30 +11,30 @@
 
 <div class="bg-[#151623] pb-20">
   <div class="px-5 md:px-20">
-    <div class='bg-[#151623]'>
-    <button
-      class="font-barlow uppercase ml-28 md:ml-0 text-[#e3af5a] text-center md:text-start px-4 py-2 mt-10 w-40 bg-[#3e342f] leading-9"
-    >
-      {{ apartment.location }}
-    </button>
-    {% if user.is_authenticated and user == apartment.agent.user %}
-    <button
-      class="font-barlow uppercase ml-28 md:ml-0 text-[#e3af5a] text-center md:text-start px-4 py-2 mt-10 w-40 bg-[#3e342f] leading-9"
-    >
-      <a href="{% url 'update_property' apartment.id %}">Update</a>
-    </button>
-    <button
-      class="font-barlow uppercase ml-28 md:ml-0 text-[#e3af5a] text-center md:text-start px-4 py-2 mt-10 w-40 bg-[#3e342f] leading-9"
-    >
-      <a href="{% url 'delete_property' apartment.id %}">Delete</a>
-    </button>
-    <button
-      class="font-barlow uppercase ml-28 md:ml-0 text-[#e3af5a] text-center md:text-start px-4 py-2 mt-10 w-40 bg-[#3e342f] leading-9"
-    >
-      <a href="{% url 'add_room' apartment.id %}">Add Room</a>
-    </button>
-    {% endif %}
-  </div>
+    <div class="bg-[#151623]">
+      <button
+        class="font-barlow uppercase ml-28 md:ml-0 text-[#e3af5a] text-center md:text-start px-4 py-2 mt-10 w-40 bg-[#3e342f] leading-9"
+      >
+        {{ apartment.address }}
+      </button>
+      {% if user.is_authenticated and user == apartment.agent.user %}
+      <button
+        class="font-barlow uppercase ml-28 md:ml-0 text-[#e3af5a] text-center md:text-start px-4 py-2 mt-10 w-40 bg-[#3e342f] leading-9"
+      >
+        <a href="{% url 'update_property' apartment.id %}">Update</a>
+      </button>
+      <button
+        class="font-barlow uppercase ml-28 md:ml-0 text-[#e3af5a] text-center md:text-start px-4 py-2 mt-10 w-40 bg-[#3e342f] leading-9"
+      >
+        <a href="{% url 'delete_property' apartment.id %}">Delete</a>
+      </button>
+      <button
+        class="font-barlow uppercase ml-28 md:ml-0 text-[#e3af5a] text-center md:text-start px-4 py-2 mt-10 w-40 bg-[#3e342f] leading-9"
+      >
+        <a href="{% url 'add_room' apartment.id %}">Add Room</a>
+      </button>
+      {% endif %}
+    </div>
     <h1
       class="text-[#fff] text-center md:text-start font-gilda text-4xl md:text-6xl mt-5"
     >
@@ -46,7 +46,7 @@
       {{apartment.description}}
     </p>
   </div>
-  <div class="flex flex-col gap-10 md:flex-row mx-auto  w-[90%] mt-10">
+  <div class="flex flex-col gap-10 md:flex-row mx-auto w-[90%] mt-10">
     <div
       class="bg-[#222222] flex flex-row md:flex-col md:sticky md:w-[25%] top-16 md:h-screen p-10 mb-10"
     >
@@ -112,14 +112,17 @@
     </div>
     {% else %}
     <div class="mx-auto md:w-[80%] w-[95%] pt-10 gap-10">
-      <h1 class="text-[#fff] text-center md:text-start font-gilda text-4xl md:text-5xl mt-5">
+      <h1
+        class="text-[#fff] text-center md:text-start font-gilda text-4xl md:text-5xl mt-5"
+      >
         No Rooms Available at the moment
       </h1>
-      </div>
+    </div>
     {% endif %}
   </div>
 </div>
-{% comment %} <div class="container mx-auto p-8">
+{% comment %}
+<div class="container mx-auto p-8">
   <h1 class="text-3xl font-bold mb-8">Property Details</h1>
   <div class="bg-white rounded-md shadow p-6 mb-8">
     <h2 class="text-2xl font-bold mb-4">Apartment Details:</h2>
@@ -149,7 +152,7 @@
         class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
       />
     </form>
-   
+
     <button
       class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
     >
@@ -181,6 +184,5 @@
     </div>
     {% endfor %}
   </div>
-</div> {% endcomment %}
-
-{% endblock %}
+</div>
+{% endcomment %} {% endblock %}

@@ -140,18 +140,19 @@ class PropertyForm(forms.ModelForm):
     class Meta:
         model = Apartment
         exclude = ('agent',)
-        fields = ('name','location','image','price','description','street_1','street_2', 'zip_code','city','county')
+        fields = ('name','image','price','description','address','country', 'postal_code','city','county','longitude','latitude')
         
         widgets = {
             'name': forms.TextInput(attrs={'class': 'w-full px-3 py-2 rounded border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring focus:border-blue-500'}),
-            'location': forms.TextInput(attrs={'class': 'w-full px-3 py-2 rounded border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring focus:border-blue-500'}),
             'image': forms.FileInput(attrs={'class': 'w-full'}),
             'price': forms.NumberInput(attrs={'class': 'w-full px-3 py-2 rounded border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring focus:border-blue-500'}),
             'description': forms.Textarea(attrs={'class': 'w-full px-3 py-2 rounded border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring focus:border-blue-500'}),
+            'address': forms.TextInput(attrs={'class': 'w-full px-3 py-2 rounded border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring focus:border-blue-500'}),
+            'country': forms.Select(attrs={'class': 'w-full px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring focus:border-blue-500'}),
+            'postal_code': forms.TextInput(attrs={'class': 'w-full px-3 py-2 rounded border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring focus:border-blue-500'}),
             'agent': forms.Select(attrs={'class': 'w-full px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring focus:border-blue-500'}),
-            'street_1': forms.TextInput(attrs={'class': 'w-full px-3 py-2 rounded border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring focus:border-blue-500'}),
-            'street_2': forms.TextInput(attrs={'class': 'w-full px-3 py-2 rounded border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring focus:border-blue-500'}),
-            'zip_code': forms.TextInput(attrs={'class': 'w-full px-3 py-2 rounded border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring focus:border-blue-500'}),
+            'longitude': forms.TextInput(attrs={'class': 'w-full px-3 py-2 rounded border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring focus:border-blue-500'}),
+            'latitude': forms.TextInput(attrs={'class': 'w-full px-3 py-2 rounded border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring focus:border-blue-500'}),
             'city': forms.TextInput(attrs={'class': 'w-full px-3 py-2 rounded border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring focus:border-blue-500'}),
             'county': forms.TextInput(attrs={'class': 'w-full px-3 py-2 rounded border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring focus:border-blue-500'}),
             
